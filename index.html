@@ -8,251 +8,431 @@
   <meta name="apple-mobile-web-app-title" content="Italiano">
   <title>Italiano</title>
   <link rel="manifest" href="manifest.json">
-  <link rel="apple-touch-icon" href="icon.png">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #1a1a2e;
+      background: #0f0f1a;
       color: #ffffff;
       min-height: 100vh;
       min-height: -webkit-fill-available;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: env(safe-area-inset-top, 20px) 24px env(safe-area-inset-bottom, 20px);
-      user-select: none;
+      overflow-x: hidden;
     }
 
-    .app-title {
-      font-size: 13px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: rgba(255,255,255,0.4);
-      margin-bottom: 28px;
+    .screen {
+      display: none;
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      padding: env(safe-area-inset-top, 24px) 24px env(safe-area-inset-bottom, 24px);
+    }
+    .screen.active { display: flex; flex-direction: column; }
+
+    /* ── HOME ── */
+    .home-header { text-align: center; padding: 40px 0 32px; }
+    .app-name  { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; }
+    .app-sub   { font-size: 14px; color: rgba(255,255,255,0.35); margin-top: 6px; }
+
+    .stats-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; margin-bottom: 24px;
+    }
+    .stat-card {
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px; padding: 18px; text-align: center;
+    }
+    .stat-number { font-size: 28px; font-weight: 700; color: #7c6af7; }
+    .stat-label  { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 4px; letter-spacing: 0.04em; }
+
+    .session-box {
+      background: rgba(124,106,247,0.1);
+      border: 1px solid rgba(124,106,247,0.25);
+      border-radius: 16px; padding: 20px; margin-bottom: 28px;
+    }
+    .session-title {
+      font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
+      text-transform: uppercase; color: rgba(124,106,247,0.9); margin-bottom: 10px;
+    }
+    .session-breakdown { display: flex; gap: 10px; flex-wrap: wrap; }
+    .session-pill {
+      font-size: 13px; padding: 4px 14px;
+      border-radius: 20px; font-weight: 600;
+    }
+    .pill-new    { background: rgba(76,175,130,0.15); color: #4caf82; }
+    .pill-review { background: rgba(255,180,50,0.15);  color: #ffb432; }
+
+    .all-caught-up { font-size: 14px; color: rgba(255,255,255,0.45); line-height: 1.6; }
+
+    .spacer { flex: 1; }
+
+    .btn-primary {
+      width: 100%; padding: 18px;
+      background: #7c6af7; color: white;
+      border: none; border-radius: 16px;
+      font-size: 17px; font-weight: 600;
+      cursor: pointer; margin-bottom: 16px;
+      transition: opacity .15s, transform .1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .btn-primary:active  { transform: scale(0.97); opacity: .9; }
+    .btn-primary:disabled { opacity: .3; cursor: default; }
+
+    /* ── CARD SCREEN ── */
+    .card-header {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 16px 0 20px;
+    }
+    .session-count { font-size: 13px; color: rgba(255,255,255,0.35); }
+    .btn-exit {
+      background: none; border: none;
+      color: rgba(255,255,255,0.3); font-size: 13px; cursor: pointer; padding: 4px;
     }
 
-    .progress-bar-wrap {
-      width: 100%;
-      max-width: 360px;
-      height: 3px;
+    .pbar-wrap {
+      width: 100%; height: 3px;
       background: rgba(255,255,255,0.1);
-      border-radius: 2px;
-      margin-bottom: 12px;
+      border-radius: 2px; margin-bottom: 28px;
+    }
+    .pbar-fill {
+      height: 100%; background: #7c6af7;
+      border-radius: 2px; transition: width .3s ease;
     }
 
-    .progress-bar-fill {
-      height: 100%;
-      background: #7c6af7;
-      border-radius: 2px;
-      transition: width 0.3s ease;
-    }
-
-    .counter {
-      font-size: 13px;
-      color: rgba(255,255,255,0.35);
-      margin-bottom: 32px;
-      letter-spacing: 0.04em;
-    }
-
-    /* ── Card ── */
     .card-wrap {
-      width: 100%;
-      max-width: 360px;
-      perspective: 1000px;
-      margin-bottom: 40px;
-      cursor: pointer;
+      width: 100%; perspective: 1000px;
+      margin-bottom: 10px; cursor: pointer;
     }
-
     .card {
-      width: 100%;
-      min-height: 220px;
-      position: relative;
+      width: 100%; min-height: 210px; position: relative;
       transform-style: preserve-3d;
-      transition: transform 0.45s cubic-bezier(0.4, 0.2, 0.2, 1);
-      border-radius: 20px;
+      transition: transform .4s cubic-bezier(.4,.2,.2,1);
+      border-radius: 22px;
     }
-
     .card.flipped { transform: rotateY(180deg); }
 
     .card-face {
-      position: absolute;
-      width: 100%;
-      min-height: 220px;
-      border-radius: 20px;
-      backface-visibility: hidden;
-      -webkit-backface-visibility: hidden;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 32px 28px;
+      position: absolute; inset: 0; min-height: 210px;
+      border-radius: 22px;
+      backface-visibility: hidden; -webkit-backface-visibility: hidden;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center; padding: 32px 28px;
+    }
+    .card-front { background: #1e1c3a; border: 1px solid rgba(124,106,247,.3); }
+    .card-back  { background: #162b22; border: 1px solid rgba(76,175,130,.3); transform: rotateY(180deg); }
+
+    .card-lang {
+      font-size: 11px; font-weight: 600; letter-spacing: .12em;
+      text-transform: uppercase; margin-bottom: 14px;
+    }
+    .card-front .card-lang { color: rgba(124,106,247,.7); }
+    .card-back  .card-lang { color: rgba(76,175,130,.7); }
+
+    .word-it {
+      font-size: 44px; font-weight: 700; color: #fff;
+      text-align: center; letter-spacing: -.02em; line-height: 1.1;
+    }
+    .word-en {
+      font-size: 24px; font-weight: 600; color: #d0ede3;
+      text-align: center; line-height: 1.3;
+    }
+    .tap-hint { font-size: 12px; color: rgba(255,255,255,.2); margin-top: 18px; }
+
+    .rank-label {
+      font-size: 12px; color: rgba(255,255,255,.18);
+      text-align: center; margin-bottom: 20px;
     }
 
-    .card-front {
-      background: linear-gradient(135deg, #2d2b55 0%, #1e1c42 100%);
-      border: 1px solid rgba(124, 106, 247, 0.3);
+    .answer-btns {
+      display: flex; gap: 14px;
+      opacity: 0; pointer-events: none;
+      transition: opacity .25s ease;
     }
+    .answer-btns.show { opacity: 1; pointer-events: all; }
 
-    .card-back {
-      background: linear-gradient(135deg, #1e3a2f 0%, #152b22 100%);
-      border: 1px solid rgba(76, 175, 130, 0.3);
-      transform: rotateY(180deg);
-    }
-
-    .card-label {
-      font-size: 11px;
-      font-weight: 600;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      margin-bottom: 16px;
-    }
-    .card-front .card-label { color: rgba(124, 106, 247, 0.7); }
-    .card-back  .card-label { color: rgba(76, 175, 130, 0.7); }
-
-    .card-word {
-      font-size: 42px;
-      font-weight: 700;
-      text-align: center;
-      line-height: 1.15;
-      letter-spacing: -0.02em;
-    }
-    .card-front .card-word { color: #ffffff; }
-    .card-back  .card-word { color: #e0f5ec; font-size: 32px; }
-
-    .card-tap-hint {
-      font-size: 12px;
-      color: rgba(255,255,255,0.25);
-      margin-top: 20px;
-    }
-
-    /* ── Buttons ── */
-    .btn-row {
-      display: flex;
-      gap: 16px;
-      width: 100%;
-      max-width: 360px;
-      margin-bottom: 20px;
-    }
-
-    .btn {
-      flex: 1;
-      padding: 16px;
-      border: none;
-      border-radius: 14px;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.15s, transform 0.1s;
+    .btn-ans {
+      flex: 1; padding: 18px 10px;
+      border: none; border-radius: 16px;
+      font-size: 15px; font-weight: 700; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      transition: transform .1s, opacity .15s;
       -webkit-tap-highlight-color: transparent;
     }
+    .btn-ans:active { transform: scale(0.96); opacity: .85; }
 
-    .btn:active { transform: scale(0.96); opacity: 0.85; }
-    .btn:disabled { opacity: 0.25; cursor: default; }
-
-    .btn-prev {
-      background: rgba(255,255,255,0.08);
-      color: rgba(255,255,255,0.7);
+    .btn-knew  {
+      background: rgba(76,175,130,.15); color: #4caf82;
+      border: 1.5px solid rgba(76,175,130,.3);
     }
-
-    .btn-next {
-      background: #7c6af7;
-      color: #ffffff;
+    .btn-didnt {
+      background: rgba(239,83,80,.1); color: #ef5350;
+      border: 1.5px solid rgba(239,83,80,.25);
     }
+    .btn-icon { font-size: 20px; line-height: 1; }
+    .btn-text { font-size: 12px; font-weight: 600; letter-spacing: .02em; }
 
-    .rank-badge {
-      font-size: 11px;
-      color: rgba(255,255,255,0.2);
-      letter-spacing: 0.06em;
+    /* ── DONE SCREEN ── */
+    .done-screen { align-items: center; justify-content: center; text-align: center; }
+    .done-emoji  { font-size: 60px; margin-bottom: 20px; }
+    .done-title  { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+    .done-sub    { font-size: 14px; color: rgba(255,255,255,.4); margin-bottom: 36px; line-height: 1.5; }
+
+    .done-grid {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 12px; width: 100%; max-width: 300px; margin-bottom: 40px;
     }
+    .done-stat { background: rgba(255,255,255,.05); border-radius: 14px; padding: 16px; }
+    .done-num  { font-size: 28px; font-weight: 700; }
+    .done-num.g { color: #4caf82; }
+    .done-num.r { color: #ef7b79; }
+    .done-num.b { color: #7c6af7; }
+    .done-lbl  { font-size: 11px; color: rgba(255,255,255,.35); margin-top: 2px; letter-spacing: .04em; }
   </style>
 </head>
 <body>
 
-  <p class="app-title">Italiano</p>
-
-  <div class="progress-bar-wrap">
-    <div class="progress-bar-fill" id="progress"></div>
+  <!-- HOME -->
+  <div class="screen active" id="screen-home">
+    <div class="home-header">
+      <div class="app-name">Italiano</div>
+      <div class="app-sub">Vocabulary trainer</div>
+    </div>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number" id="stat-seen">0</div>
+        <div class="stat-label">words seen</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" id="stat-mastered">0</div>
+        <div class="stat-label">mastered</div>
+      </div>
+    </div>
+    <div class="session-box" id="session-info"></div>
+    <div class="spacer"></div>
+    <button class="btn-primary" id="btn-start" onclick="startSession()">Start session</button>
   </div>
-  <p class="counter" id="counter">1 / 945</p>
 
-  <div class="card-wrap" id="cardWrap" onclick="flipCard()">
-    <div class="card" id="card">
-      <div class="card-face card-front">
-        <span class="card-label">Italiano</span>
-        <span class="card-word" id="italianWord">—</span>
-        <span class="card-tap-hint">tap to reveal</span>
+  <!-- CARD -->
+  <div class="screen" id="screen-card">
+    <div class="card-header">
+      <span class="session-count" id="sess-count">1 / 20</span>
+      <button class="btn-exit" onclick="exitSession()">✕ Exit</button>
+    </div>
+    <div class="pbar-wrap"><div class="pbar-fill" id="pbar" style="width:0%"></div></div>
+
+    <div class="card-wrap" onclick="flipCard()">
+      <div class="card" id="card">
+        <div class="card-face card-front">
+          <span class="card-lang">Italiano</span>
+          <span class="word-it" id="word-it">—</span>
+          <span class="tap-hint">tap to reveal</span>
+        </div>
+        <div class="card-face card-back">
+          <span class="card-lang">English</span>
+          <span class="word-en" id="word-en">—</span>
+        </div>
       </div>
-      <div class="card-face card-back">
-        <span class="card-label">English</span>
-        <span class="card-word" id="englishWord">—</span>
-      </div>
+    </div>
+
+    <div class="rank-label" id="rank-lbl">Frequency rank #1</div>
+
+    <div class="answer-btns" id="ans-btns">
+      <button class="btn-ans btn-didnt" onclick="answer(false)">
+        <span class="btn-icon">✗</span>
+        <span class="btn-text">Didn't know</span>
+      </button>
+      <button class="btn-ans btn-knew" onclick="answer(true)">
+        <span class="btn-icon">✓</span>
+        <span class="btn-text">Knew it</span>
+      </button>
     </div>
   </div>
 
-  <div class="btn-row">
-    <button class="btn btn-prev" id="btnPrev" onclick="prevCard()">← Back</button>
-    <button class="btn btn-next" id="btnNext" onclick="nextCard()">Next →</button>
+  <!-- DONE -->
+  <div class="screen done-screen" id="screen-done">
+    <div class="done-emoji">🎉</div>
+    <div class="done-title">Sessione completa!</div>
+    <div class="done-sub" id="done-sub">Come back tomorrow for your reviews.</div>
+    <div class="done-grid">
+      <div class="done-stat"><div class="done-num g" id="d-knew">0</div><div class="done-lbl">knew it</div></div>
+      <div class="done-stat"><div class="done-num r" id="d-didnt">0</div><div class="done-lbl">didn't know</div></div>
+      <div class="done-stat"><div class="done-num b" id="d-new">0</div><div class="done-lbl">new words</div></div>
+      <div class="done-stat"><div class="done-num b" id="d-rev">0</div><div class="done-lbl">reviews</div></div>
+    </div>
+    <button class="btn-primary" onclick="showHome()">Back to home</button>
   </div>
-
-  <p class="rank-badge" id="rankBadge">Frequency rank #1</p>
 
   <script src="vocabulary.js"></script>
   <script>
-    let currentIndex = 0;
-    let isFlipped = false;
+    // ── CONSTANTS ──────────────────────────────────────────────
+    const STORAGE_KEY = 'italiano_v1';
+    const MAX_NEW     = 20; // new words per session
+    // Interval ladder (days) after each consecutive correct answer
+    const INTERVALS   = [1, 6, 14, 30, 90];
 
-    function showCard(index) {
-      const word = VOCABULARY[index];
-      document.getElementById("italianWord").textContent = word.italian;
-      document.getElementById("englishWord").textContent = word.english;
-      document.getElementById("counter").textContent = `${index + 1} / ${VOCABULARY.length}`;
-      document.getElementById("rankBadge").textContent = `Frequency rank #${word.id}`;
+    // ── STATE ──────────────────────────────────────────────────
+    let progress  = {};   // { wordId: { rep, interval, nextReview } }
+    let queue     = [];   // words in today's session
+    let qIdx      = 0;
+    let flipped   = false;
+    let sStats    = { knew:0, didnt:0, newW:0, rev:0 };
 
-      const pct = ((index + 1) / VOCABULARY.length * 100).toFixed(1);
-      document.getElementById("progress").style.width = pct + "%";
+    // ── STORAGE ────────────────────────────────────────────────
+    function loadProgress() {
+      try { progress = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
+      catch(e) { progress = {}; }
+    }
+    function saveProgress() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
+    }
 
-      document.getElementById("btnPrev").disabled = (index === 0);
-      document.getElementById("btnNext").disabled = (index === VOCABULARY.length - 1);
+    // ── SRS LOGIC ──────────────────────────────────────────────
+    function recordAnswer(wordId, knew) {
+      const c = progress[wordId] || { rep:0, interval:0 };
+      if (knew) {
+        c.rep = (c.rep || 0) + 1;
+        c.interval = INTERVALS[Math.min(c.rep - 1, INTERVALS.length - 1)];
+      } else {
+        c.rep      = 0;
+        c.interval = 1;
+      }
+      const next = new Date();
+      next.setDate(next.getDate() + c.interval);
+      next.setHours(0, 0, 0, 0);
+      c.nextReview    = next.getTime();
+      progress[wordId] = c;
+      saveProgress();
+    }
 
-      // Reset flip
-      const card = document.getElementById("card");
-      card.classList.remove("flipped");
-      isFlipped = false;
+    // ── QUEUE BUILDER ──────────────────────────────────────────
+    function buildQueue() {
+      const todayTs = (() => { const d = new Date(); d.setHours(0,0,0,0); return d.getTime(); })();
+      const reviews = [], newWords = [];
+      for (const w of VOCABULARY) {
+        const c = progress[w.id];
+        if (!c)                       newWords.push(w);
+        else if (c.nextReview <= todayTs) reviews.push(w);
+      }
+      const selNew = newWords.slice(0, MAX_NEW);
+      return { queue: shuffle([...reviews, ...selNew]), nNew: selNew.length, nRev: reviews.length };
+    }
+
+    function shuffle(a) {
+      for (let i = a.length-1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i+1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    // ── STATS ──────────────────────────────────────────────────
+    function getStats() {
+      const vals = Object.values(progress);
+      return {
+        seen:     vals.length,
+        mastered: vals.filter(c => c.interval >= 30).length
+      };
+    }
+
+    // ── SCREENS ────────────────────────────────────────────────
+    function showScreen(id) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+    }
+
+    function showHome() {
+      loadProgress();
+      const s = getStats();
+      document.getElementById('stat-seen').textContent     = s.seen;
+      document.getElementById('stat-mastered').textContent = s.mastered;
+
+      const { nNew, nRev } = buildQueue();
+      const box = document.getElementById('session-info');
+      const btn = document.getElementById('btn-start');
+
+      if (nNew === 0 && nRev === 0) {
+        box.innerHTML = '<div class="all-caught-up">✓ All caught up!<br>Check back tomorrow for your next reviews.</div>';
+        btn.disabled = true; btn.textContent = 'Nothing due today';
+      } else {
+        box.innerHTML = `
+          <div class="session-title">Today's session</div>
+          <div class="session-breakdown">
+            ${nNew ? `<span class="session-pill pill-new">${nNew} new</span>` : ''}
+            ${nRev ? `<span class="session-pill pill-review">${nRev} review</span>` : ''}
+          </div>`;
+        btn.disabled = false; btn.textContent = 'Start session';
+      }
+      showScreen('screen-home');
+    }
+
+    // ── SESSION ────────────────────────────────────────────────
+    function startSession() {
+      const { queue: q, nNew, nRev } = buildQueue();
+      queue  = q; qIdx = 0;
+      sStats = { knew:0, didnt:0, newW:nNew, rev:nRev };
+      showScreen('screen-card');
+      renderCard();
+    }
+
+    function renderCard() {
+      if (qIdx >= queue.length) { endSession(); return; }
+      const w = queue[qIdx];
+      document.getElementById('word-it').textContent   = w.italian;
+      document.getElementById('word-en').textContent   = w.english;
+      document.getElementById('rank-lbl').textContent  = `Frequency rank #${w.id}`;
+      document.getElementById('sess-count').textContent = `${qIdx+1} / ${queue.length}`;
+      document.getElementById('pbar').style.width = ((qIdx / queue.length)*100).toFixed(1)+'%';
+
+      // Reset flip without animation
+      const card = document.getElementById('card');
+      card.style.transition = 'none';
+      card.classList.remove('flipped');
+      requestAnimationFrame(() => { card.style.transition = ''; });
+      flipped = false;
+      document.getElementById('ans-btns').classList.remove('show');
     }
 
     function flipCard() {
-      const card = document.getElementById("card");
-      isFlipped = !isFlipped;
-      card.classList.toggle("flipped", isFlipped);
+      if (flipped) return;
+      flipped = true;
+      document.getElementById('card').classList.add('flipped');
+      setTimeout(() => document.getElementById('ans-btns').classList.add('show'), 250);
     }
 
-    function nextCard() {
-      if (currentIndex < VOCABULARY.length - 1) {
-        currentIndex++;
-        showCard(currentIndex);
-      }
+    function answer(knew) {
+      recordAnswer(queue[qIdx].id, knew);
+      knew ? sStats.knew++ : sStats.didnt++;
+      qIdx++;
+      renderCard();
     }
 
-    function prevCard() {
-      if (currentIndex > 0) {
-        currentIndex--;
-        showCard(currentIndex);
-      }
+    function exitSession() {
+      if (confirm('Exit session? Progress so far is saved.')) showHome();
     }
 
-    // Keyboard support (desktop testing)
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowRight") nextCard();
-      if (e.key === "ArrowLeft")  prevCard();
-      if (e.key === " " || e.key === "Enter") flipCard();
+    function endSession() {
+      document.getElementById('pbar').style.width = '100%';
+      document.getElementById('d-knew').textContent  = sStats.knew;
+      document.getElementById('d-didnt').textContent = sStats.didnt;
+      document.getElementById('d-new').textContent   = sStats.newW;
+      document.getElementById('d-rev').textContent   = sStats.rev;
+      const total = sStats.knew + sStats.didnt;
+      const pct   = total ? Math.round((sStats.knew / total)*100) : 0;
+      document.getElementById('done-sub').textContent = `${pct}% correct · Come back tomorrow for your reviews.`;
+      showScreen('screen-done');
+    }
+
+    // ── KEYBOARD (desktop testing) ──────────────────────────────
+    document.addEventListener('keydown', e => {
+      if (!document.getElementById('screen-card').classList.contains('active')) return;
+      if ((e.key === ' ' || e.key === 'Enter') && !flipped) { e.preventDefault(); flipCard(); }
+      if (e.key === 'ArrowRight' && flipped) answer(true);
+      if (e.key === 'ArrowLeft'  && flipped) answer(false);
     });
 
-    // Init
-    showCard(0);
+    // ── INIT ───────────────────────────────────────────────────
+    loadProgress();
+    showHome();
   </script>
 </body>
 </html>
