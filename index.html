@@ -10,249 +10,268 @@
   <link rel="manifest" href="manifest.json">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-
     body {
       font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      background: #0f0f1a;
-      color: #ffffff;
-      min-height: 100vh;
-      min-height: -webkit-fill-available;
-      overflow-x: hidden;
+      background: #0f0f1a; color: #fff;
+      min-height: 100vh; min-height: -webkit-fill-available; overflow-x: hidden;
     }
-
     .screen {
-      display: none;
-      min-height: 100vh;
-      min-height: -webkit-fill-available;
-      padding: env(safe-area-inset-top, 24px) 24px env(safe-area-inset-bottom, 24px);
+      display: none; min-height: 100vh; min-height: -webkit-fill-available;
+      padding: env(safe-area-inset-top,24px) 24px env(safe-area-inset-bottom,24px);
     }
     .screen.active { display: flex; flex-direction: column; }
 
-    /* ── HOME ── */
-    .home-header { text-align: center; padding: 40px 0 32px; }
-    .app-name  { font-size: 32px; font-weight: 700; letter-spacing: -0.02em; }
-    .app-sub   { font-size: 14px; color: rgba(255,255,255,0.35); margin-top: 6px; }
+    /* ── HOME ───────────────────────────────────────────────── */
+    .home-header { text-align: center; padding: 36px 0 28px; }
+    .app-name { font-size: 32px; font-weight: 700; letter-spacing: -.02em; }
+    .app-sub  { font-size: 14px; color: rgba(255,255,255,.35); margin-top: 6px; }
 
-    .stats-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 12px; margin-bottom: 24px;
+    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+    .stat-card  {
+      background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
+      border-radius: 16px; padding: 16px; text-align: center;
     }
-    .stat-card {
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
-      border-radius: 16px; padding: 18px; text-align: center;
+    .stat-num { font-size: 28px; font-weight: 700; color: #7c6af7; }
+    .stat-lbl { font-size: 12px; color: rgba(255,255,255,.4); margin-top: 4px; letter-spacing: .04em; }
+
+    .mode-toggle {
+      display: flex; background: rgba(255,255,255,.07);
+      border-radius: 12px; padding: 4px; gap: 4px; margin-bottom: 16px;
     }
-    .stat-number { font-size: 28px; font-weight: 700; color: #7c6af7; }
-    .stat-label  { font-size: 12px; color: rgba(255,255,255,0.4); margin-top: 4px; letter-spacing: 0.04em; }
+    .mode-btn {
+      flex: 1; padding: 10px; border: none; border-radius: 9px;
+      font-size: 14px; font-weight: 600; cursor: pointer;
+      background: transparent; color: rgba(255,255,255,.4);
+      transition: all .2s; -webkit-tap-highlight-color: transparent;
+    }
+    .mode-btn.mode-active { background: rgba(255,255,255,.12); color: #fff; }
 
     .session-box {
-      background: rgba(124,106,247,0.1);
-      border: 1px solid rgba(124,106,247,0.25);
-      border-radius: 16px; padding: 20px; margin-bottom: 28px;
+      background: rgba(124,106,247,.1); border: 1px solid rgba(124,106,247,.25);
+      border-radius: 16px; padding: 18px; margin-bottom: 20px;
     }
-    .session-title {
-      font-size: 12px; font-weight: 600; letter-spacing: 0.08em;
-      text-transform: uppercase; color: rgba(124,106,247,0.9); margin-bottom: 10px;
-    }
+    .session-title { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: rgba(124,106,247,.9); margin-bottom: 10px; }
     .session-breakdown { display: flex; gap: 10px; flex-wrap: wrap; }
-    .session-pill {
-      font-size: 13px; padding: 4px 14px;
-      border-radius: 20px; font-weight: 600;
-    }
-    .pill-new    { background: rgba(76,175,130,0.15); color: #4caf82; }
-    .pill-review { background: rgba(255,180,50,0.15);  color: #ffb432; }
-
-    .all-caught-up { font-size: 14px; color: rgba(255,255,255,0.45); line-height: 1.6; }
+    .session-pill { font-size: 13px; padding: 4px 14px; border-radius: 20px; font-weight: 600; }
+    .pill-new    { background: rgba(76,175,130,.15); color: #4caf82; }
+    .pill-review { background: rgba(255,180,50,.15);  color: #ffb432; }
+    .all-caught-up { font-size: 14px; color: rgba(255,255,255,.45); line-height: 1.6; }
 
     .spacer { flex: 1; }
-
     .btn-primary {
-      width: 100%; padding: 18px;
-      background: #7c6af7; color: white;
-      border: none; border-radius: 16px;
-      font-size: 17px; font-weight: 600;
-      cursor: pointer; margin-bottom: 16px;
-      transition: opacity .15s, transform .1s;
-      -webkit-tap-highlight-color: transparent;
+      width: 100%; padding: 18px; background: #7c6af7; color: #fff;
+      border: none; border-radius: 16px; font-size: 17px; font-weight: 600;
+      cursor: pointer; margin-bottom: 12px;
+      transition: opacity .15s, transform .1s; -webkit-tap-highlight-color: transparent;
     }
-    .btn-primary:active  { transform: scale(0.97); opacity: .9; }
+    .btn-primary:active { transform: scale(.97); opacity: .9; }
     .btn-primary:disabled { opacity: .3; cursor: default; }
+    .btn-link {
+      background: none; border: none; color: rgba(255,255,255,.3);
+      font-size: 14px; cursor: pointer; padding: 8px; width: 100%; text-align: center;
+    }
+    .btn-link:active { color: rgba(255,255,255,.6); }
 
-    /* ── CARD SCREEN ── */
+    /* ── CARD SCREEN ────────────────────────────────────────── */
     .card-header {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 0 20px;
+      padding: 16px 0 18px;
     }
-    .session-count { font-size: 13px; color: rgba(255,255,255,0.35); }
-    .btn-exit {
-      background: none; border: none;
-      color: rgba(255,255,255,0.3); font-size: 13px; cursor: pointer; padding: 4px;
-    }
+    .sess-count { font-size: 13px; color: rgba(255,255,255,.35); }
+    .btn-exit   { background: none; border: none; color: rgba(255,255,255,.3); font-size: 13px; cursor: pointer; padding: 4px; }
 
-    .pbar-wrap {
-      width: 100%; height: 3px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 2px; margin-bottom: 28px;
-    }
-    .pbar-fill {
-      height: 100%; background: #7c6af7;
-      border-radius: 2px; transition: width .3s ease;
-    }
+    .pbar-wrap { width: 100%; height: 3px; background: rgba(255,255,255,.1); border-radius: 2px; margin-bottom: 24px; }
+    .pbar-fill { height: 100%; background: #7c6af7; border-radius: 2px; transition: width .3s ease; }
 
-    .card-wrap {
-      width: 100%; perspective: 1000px;
-      margin-bottom: 10px; cursor: pointer;
-    }
+    /* Flashcard */
+    #flashcard-ui { display: flex; flex-direction: column; flex: 1; }
+    .card-wrap { width: 100%; perspective: 1000px; margin-bottom: 8px; cursor: pointer; }
     .card {
-      width: 100%; min-height: 210px; position: relative;
+      width: 100%; min-height: 200px; position: relative;
       transform-style: preserve-3d;
-      transition: transform .4s cubic-bezier(.4,.2,.2,1);
-      border-radius: 22px;
+      transition: transform .4s cubic-bezier(.4,.2,.2,1); border-radius: 22px;
     }
     .card.flipped { transform: rotateY(180deg); }
-
     .card-face {
-      position: absolute; inset: 0; min-height: 210px;
-      border-radius: 22px;
+      position: absolute; inset: 0; min-height: 200px; border-radius: 22px;
       backface-visibility: hidden; -webkit-backface-visibility: hidden;
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center; padding: 32px 28px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px;
     }
     .card-front { background: #1e1c3a; border: 1px solid rgba(124,106,247,.3); }
     .card-back  { background: #162b22; border: 1px solid rgba(76,175,130,.3); transform: rotateY(180deg); }
-
-    .card-lang {
-      font-size: 11px; font-weight: 600; letter-spacing: .12em;
-      text-transform: uppercase; margin-bottom: 14px;
-    }
+    .card-lang  { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 12px; }
     .card-front .card-lang { color: rgba(124,106,247,.7); }
     .card-back  .card-lang { color: rgba(76,175,130,.7); }
+    .word-it { font-size: 42px; font-weight: 700; color: #fff; text-align: center; letter-spacing: -.02em; line-height: 1.1; }
+    .word-en { font-size: 24px; font-weight: 600; color: #d0ede3; text-align: center; line-height: 1.3; }
+    .tap-hint { font-size: 12px; color: rgba(255,255,255,.2); margin-top: 16px; }
 
-    .word-it {
-      font-size: 44px; font-weight: 700; color: #fff;
-      text-align: center; letter-spacing: -.02em; line-height: 1.1;
+    .audio-row {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 10px 2px; margin-bottom: 6px;
     }
-    .word-en {
-      font-size: 24px; font-weight: 600; color: #d0ede3;
-      text-align: center; line-height: 1.3;
+    .rank-lbl  { font-size: 12px; color: rgba(255,255,255,.18); }
+    .speak-btn {
+      background: rgba(255,255,255,.07); color: rgba(255,255,255,.55);
+      border: 1px solid rgba(255,255,255,.1); border-radius: 20px;
+      padding: 6px 16px; font-size: 13px; cursor: pointer;
+      -webkit-tap-highlight-color: transparent; transition: background .15s;
     }
-    .tap-hint { font-size: 12px; color: rgba(255,255,255,.2); margin-top: 18px; }
+    .speak-btn:active { background: rgba(255,255,255,.14); }
 
-    .rank-label {
-      font-size: 12px; color: rgba(255,255,255,.18);
-      text-align: center; margin-bottom: 20px;
-    }
-
-    .answer-btns {
-      display: flex; gap: 14px;
-      opacity: 0; pointer-events: none;
-      transition: opacity .25s ease;
-    }
+    .answer-btns { display: flex; gap: 12px; opacity: 0; pointer-events: none; transition: opacity .25s; }
     .answer-btns.show { opacity: 1; pointer-events: all; }
-
     .btn-ans {
-      flex: 1; padding: 18px 10px;
-      border: none; border-radius: 16px;
-      font-size: 15px; font-weight: 700; cursor: pointer;
-      display: flex; flex-direction: column; align-items: center; gap: 4px;
-      transition: transform .1s, opacity .15s;
-      -webkit-tap-highlight-color: transparent;
+      flex: 1; padding: 17px 10px; border: none; border-radius: 15px;
+      font-weight: 700; cursor: pointer;
+      display: flex; flex-direction: column; align-items: center; gap: 3px;
+      transition: transform .1s, opacity .15s; -webkit-tap-highlight-color: transparent;
     }
-    .btn-ans:active { transform: scale(0.96); opacity: .85; }
+    .btn-ans:active { transform: scale(.96); opacity: .85; }
+    .btn-knew  { background: rgba(76,175,130,.15); color: #4caf82; border: 1.5px solid rgba(76,175,130,.3); font-size: 15px; }
+    .btn-didnt { background: rgba(239,83,80,.1);  color: #ef5350; border: 1.5px solid rgba(239,83,80,.25); font-size: 15px; }
+    .btn-icon  { font-size: 18px; line-height: 1; }
+    .btn-txt   { font-size: 12px; }
 
-    .btn-knew  {
-      background: rgba(76,175,130,.15); color: #4caf82;
-      border: 1.5px solid rgba(76,175,130,.3);
+    /* Quiz */
+    #quiz-ui { display: none; flex-direction: column; flex: 1; }
+    .quiz-card {
+      background: #1e1c3a; border: 1px solid rgba(124,106,247,.3);
+      border-radius: 22px; width: 100%;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      padding: 28px; min-height: 130px; margin-bottom: 14px;
     }
-    .btn-didnt {
-      background: rgba(239,83,80,.1); color: #ef5350;
-      border: 1.5px solid rgba(239,83,80,.25);
+    .quiz-word { font-size: 40px; font-weight: 700; color: #fff; text-align: center; }
+    .quiz-audio-row { display: flex; justify-content: center; margin-bottom: 14px; }
+    .quiz-choices { display: flex; flex-direction: column; gap: 10px; width: 100%; }
+    .choice-btn {
+      width: 100%; padding: 15px 18px;
+      background: rgba(255,255,255,.06); color: #fff;
+      border: 1px solid rgba(255,255,255,.1); border-radius: 14px;
+      font-size: 15px; font-weight: 500; cursor: pointer; text-align: left;
+      transition: background .12s, transform .1s; -webkit-tap-highlight-color: transparent;
     }
-    .btn-icon { font-size: 20px; line-height: 1; }
-    .btn-text { font-size: 12px; font-weight: 600; letter-spacing: .02em; }
+    .choice-btn:not(:disabled):active { transform: scale(.98); background: rgba(255,255,255,.1); }
+    .choice-btn.correct { background: rgba(76,175,130,.2)!important; border-color: rgba(76,175,130,.5)!important; color: #4caf82!important; font-weight: 700; }
+    .choice-btn.wrong   { background: rgba(239,83,80,.15)!important; border-color: rgba(239,83,80,.4)!important; color: #ef7b79!important; }
 
-    /* ── DONE SCREEN ── */
+    /* ── DONE ───────────────────────────────────────────────── */
     .done-screen { align-items: center; justify-content: center; text-align: center; }
-    .done-emoji  { font-size: 60px; margin-bottom: 20px; }
+    .done-emoji  { font-size: 60px; margin-bottom: 18px; }
     .done-title  { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
-    .done-sub    { font-size: 14px; color: rgba(255,255,255,.4); margin-bottom: 36px; line-height: 1.5; }
+    .done-sub    { font-size: 14px; color: rgba(255,255,255,.4); margin-bottom: 32px; line-height: 1.5; }
+    .done-grid   { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 300px; margin-bottom: 36px; }
+    .done-stat   { background: rgba(255,255,255,.05); border-radius: 14px; padding: 14px; }
+    .done-num    { font-size: 28px; font-weight: 700; }
+    .done-num.g  { color: #4caf82; }
+    .done-num.r  { color: #ef7b79; }
+    .done-num.b  { color: #7c6af7; }
+    .done-lbl    { font-size: 11px; color: rgba(255,255,255,.35); margin-top: 2px; letter-spacing: .04em; }
 
-    .done-grid {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 12px; width: 100%; max-width: 300px; margin-bottom: 40px;
-    }
-    .done-stat { background: rgba(255,255,255,.05); border-radius: 14px; padding: 16px; }
-    .done-num  { font-size: 28px; font-weight: 700; }
-    .done-num.g { color: #4caf82; }
-    .done-num.r { color: #ef7b79; }
-    .done-num.b { color: #7c6af7; }
-    .done-lbl  { font-size: 11px; color: rgba(255,255,255,.35); margin-top: 2px; letter-spacing: .04em; }
+    /* ── STATS ──────────────────────────────────────────────── */
+    .stats-hdr { display: flex; align-items: center; gap: 14px; padding: 20px 0 28px; }
+    .back-btn  { background: none; border: none; color: rgba(255,255,255,.45); font-size: 22px; cursor: pointer; padding: 4px; line-height: 1; }
+    .stats-heading { font-size: 20px; font-weight: 700; }
+
+    .prog-bar-wrap { height: 14px; border-radius: 7px; overflow: hidden; display: flex; margin-bottom: 18px; background: rgba(255,255,255,.08); }
+    .pb-seg   { height: 100%; min-width: 0; }
+    .pb-green { background: #4caf82; }
+    .pb-purple{ background: #7c6af7; }
+    .pb-gray  { background: rgba(255,255,255,.12); }
+
+    .legend { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+    .leg-row { display: flex; align-items: center; }
+    .leg-dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 12px; flex-shrink: 0; }
+    .leg-label{ font-size: 14px; color: rgba(255,255,255,.65); flex: 1; }
+    .leg-count{ font-size: 15px; font-weight: 700; color: #fff; }
+
+    .acc-box   { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); border-radius: 18px; padding: 24px; text-align: center; margin-bottom: 28px; }
+    .acc-pct   { font-size: 52px; font-weight: 700; color: #7c6af7; line-height: 1; }
+    .acc-label { font-size: 13px; color: rgba(255,255,255,.4); margin-top: 8px; }
+    .acc-sub   { font-size: 12px; color: rgba(255,255,255,.25); margin-top: 4px; }
   </style>
 </head>
 <body>
 
-  <!-- HOME -->
+  <!-- ── HOME ─────────────────────────────────────────────── -->
   <div class="screen active" id="screen-home">
     <div class="home-header">
       <div class="app-name">Italiano</div>
       <div class="app-sub">Vocabulary trainer</div>
     </div>
+
     <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-number" id="stat-seen">0</div>
-        <div class="stat-label">words seen</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-number" id="stat-mastered">0</div>
-        <div class="stat-label">mastered</div>
-      </div>
+      <div class="stat-card"><div class="stat-num" id="stat-seen">0</div><div class="stat-lbl">words seen</div></div>
+      <div class="stat-card"><div class="stat-num" id="stat-master">0</div><div class="stat-lbl">mastered</div></div>
     </div>
+
+    <div class="mode-toggle">
+      <button class="mode-btn mode-active" id="btn-flash" onclick="setMode('flashcard')">🃏 Flashcard</button>
+      <button class="mode-btn"             id="btn-quiz"  onclick="setMode('quiz')">❓ Quiz</button>
+    </div>
+
     <div class="session-box" id="session-info"></div>
+
     <div class="spacer"></div>
     <button class="btn-primary" id="btn-start" onclick="startSession()">Start session</button>
+    <button class="btn-link" onclick="showStats()">View progress →</button>
   </div>
 
-  <!-- CARD -->
+  <!-- ── CARD ──────────────────────────────────────────────── -->
   <div class="screen" id="screen-card">
     <div class="card-header">
-      <span class="session-count" id="sess-count">1 / 20</span>
+      <span class="sess-count" id="sess-count">1 / 20</span>
       <button class="btn-exit" onclick="exitSession()">✕ Exit</button>
     </div>
     <div class="pbar-wrap"><div class="pbar-fill" id="pbar" style="width:0%"></div></div>
 
-    <div class="card-wrap" onclick="flipCard()">
-      <div class="card" id="card">
-        <div class="card-face card-front">
-          <span class="card-lang">Italiano</span>
-          <span class="word-it" id="word-it">—</span>
-          <span class="tap-hint">tap to reveal</span>
+    <!-- Flashcard mode -->
+    <div id="flashcard-ui">
+      <div class="card-wrap" onclick="flipCard()">
+        <div class="card" id="card">
+          <div class="card-face card-front">
+            <span class="card-lang">Italiano</span>
+            <span class="word-it" id="word-it">—</span>
+            <span class="tap-hint">tap to reveal</span>
+          </div>
+          <div class="card-face card-back">
+            <span class="card-lang">English</span>
+            <span class="word-en" id="word-en">—</span>
+          </div>
         </div>
-        <div class="card-face card-back">
-          <span class="card-lang">English</span>
-          <span class="word-en" id="word-en">—</span>
-        </div>
+      </div>
+      <div class="audio-row">
+        <button class="speak-btn" onclick="speakWord()">🔊 Speak</button>
+        <span class="rank-lbl" id="rank-lbl">Frequency rank #1</span>
+      </div>
+      <div class="answer-btns" id="ans-btns">
+        <button class="btn-ans btn-didnt" onclick="answer(false)">
+          <span class="btn-icon">✗</span><span class="btn-txt">Didn't know</span>
+        </button>
+        <button class="btn-ans btn-knew" onclick="answer(true)">
+          <span class="btn-icon">✓</span><span class="btn-txt">Knew it</span>
+        </button>
       </div>
     </div>
 
-    <div class="rank-label" id="rank-lbl">Frequency rank #1</div>
-
-    <div class="answer-btns" id="ans-btns">
-      <button class="btn-ans btn-didnt" onclick="answer(false)">
-        <span class="btn-icon">✗</span>
-        <span class="btn-text">Didn't know</span>
-      </button>
-      <button class="btn-ans btn-knew" onclick="answer(true)">
-        <span class="btn-icon">✓</span>
-        <span class="btn-text">Knew it</span>
-      </button>
+    <!-- Quiz mode -->
+    <div id="quiz-ui">
+      <div class="quiz-card">
+        <span class="card-lang" style="color:rgba(124,106,247,.7)">Italiano</span>
+        <span class="quiz-word" id="quiz-word">—</span>
+      </div>
+      <div class="quiz-audio-row">
+        <button class="speak-btn" onclick="speakWord()">🔊 Speak</button>
+      </div>
+      <div class="quiz-choices" id="quiz-choices"></div>
     </div>
   </div>
 
-  <!-- DONE -->
+  <!-- ── DONE ──────────────────────────────────────────────── -->
   <div class="screen done-screen" id="screen-done">
     <div class="done-emoji">🎉</div>
     <div class="done-title">Sessione completa!</div>
-    <div class="done-sub" id="done-sub">Come back tomorrow for your reviews.</div>
+    <div class="done-sub" id="done-sub">Come back tomorrow.</div>
     <div class="done-grid">
       <div class="done-stat"><div class="done-num g" id="d-knew">0</div><div class="done-lbl">knew it</div></div>
       <div class="done-stat"><div class="done-num r" id="d-didnt">0</div><div class="done-lbl">didn't know</div></div>
@@ -262,22 +281,64 @@
     <button class="btn-primary" onclick="showHome()">Back to home</button>
   </div>
 
+  <!-- ── STATS ─────────────────────────────────────────────── -->
+  <div class="screen" id="screen-stats">
+    <div class="stats-hdr">
+      <button class="back-btn" onclick="showHome()">‹</button>
+      <span class="stats-heading">Il tuo progresso</span>
+    </div>
+
+    <div class="prog-bar-wrap">
+      <div class="pb-seg pb-green"  id="pb-master" style="width:0%"></div>
+      <div class="pb-seg pb-purple" id="pb-learn"  style="width:0%"></div>
+      <div class="pb-seg pb-gray"   id="pb-new"    style="width:100%"></div>
+    </div>
+
+    <div class="legend">
+      <div class="leg-row">
+        <div class="leg-dot" style="background:#4caf82"></div>
+        <span class="leg-label">Mastered (30+ day interval)</span>
+        <span class="leg-count" id="s-master">0</span>
+      </div>
+      <div class="leg-row">
+        <div class="leg-dot" style="background:#7c6af7"></div>
+        <span class="leg-label">Learning</span>
+        <span class="leg-count" id="s-learn">0</span>
+      </div>
+      <div class="leg-row">
+        <div class="leg-dot" style="background:rgba(255,255,255,.2)"></div>
+        <span class="leg-label">Not yet seen</span>
+        <span class="leg-count" id="s-new">0</span>
+      </div>
+    </div>
+
+    <div class="acc-box">
+      <div class="acc-pct"   id="s-acc">—</div>
+      <div class="acc-label">Overall accuracy</div>
+      <div class="acc-sub"   id="s-total">0 answers total</div>
+    </div>
+
+    <button class="btn-primary" onclick="showHome()">Back to home</button>
+  </div>
+
   <script src="vocabulary.js"></script>
   <script>
-    // ── CONSTANTS ──────────────────────────────────────────────
+    // ── CONSTANTS ────────────────────────────────────────────
     const STORAGE_KEY = 'italiano_v1';
-    const MAX_NEW     = 20; // new words per session
-    // Interval ladder (days) after each consecutive correct answer
-    const INTERVALS   = [1, 6, 14, 30, 90];
+    const MAX_NEW     = 20;
+    const INTERVALS   = [1, 6, 14, 30, 90]; // days
 
-    // ── STATE ──────────────────────────────────────────────────
-    let progress  = {};   // { wordId: { rep, interval, nextReview } }
-    let queue     = [];   // words in today's session
-    let qIdx      = 0;
-    let flipped   = false;
-    let sStats    = { knew:0, didnt:0, newW:0, rev:0 };
+    // ── STATE ────────────────────────────────────────────────
+    let progress    = {};
+    let queue       = [];
+    let qIdx        = 0;
+    let flipped     = false;
+    let appMode     = 'flashcard';
+    let currentWord = null;
+    let quizLocked  = false;
+    let sStats      = { knew:0, didnt:0, newW:0, rev:0 };
 
-    // ── STORAGE ────────────────────────────────────────────────
+    // ── STORAGE ──────────────────────────────────────────────
     function loadProgress() {
       try { progress = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
       catch(e) { progress = {}; }
@@ -286,15 +347,16 @@
       localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
     }
 
-    // ── SRS LOGIC ──────────────────────────────────────────────
+    // ── SRS ──────────────────────────────────────────────────
     function recordAnswer(wordId, knew) {
-      const c = progress[wordId] || { rep:0, interval:0 };
+      const c = progress[wordId] || { rep:0, interval:0, totalAns:0, totalCorrect:0 };
+      c.totalAns     = (c.totalAns     || 0) + 1;
+      c.totalCorrect = (c.totalCorrect || 0) + (knew ? 1 : 0);
       if (knew) {
-        c.rep = (c.rep || 0) + 1;
+        c.rep      = (c.rep || 0) + 1;
         c.interval = INTERVALS[Math.min(c.rep - 1, INTERVALS.length - 1)];
       } else {
-        c.rep      = 0;
-        c.interval = 1;
+        c.rep = 0; c.interval = 1;
       }
       const next = new Date();
       next.setDate(next.getDate() + c.interval);
@@ -304,13 +366,13 @@
       saveProgress();
     }
 
-    // ── QUEUE BUILDER ──────────────────────────────────────────
+    // ── QUEUE ────────────────────────────────────────────────
     function buildQueue() {
       const todayTs = (() => { const d = new Date(); d.setHours(0,0,0,0); return d.getTime(); })();
       const reviews = [], newWords = [];
       for (const w of VOCABULARY) {
         const c = progress[w.id];
-        if (!c)                       newWords.push(w);
+        if (!c) newWords.push(w);
         else if (c.nextReview <= todayTs) reviews.push(w);
       }
       const selNew = newWords.slice(0, MAX_NEW);
@@ -318,23 +380,68 @@
     }
 
     function shuffle(a) {
-      for (let i = a.length-1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i+1));
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
         [a[i], a[j]] = [a[j], a[i]];
       }
       return a;
     }
 
-    // ── STATS ──────────────────────────────────────────────────
-    function getStats() {
-      const vals = Object.values(progress);
-      return {
-        seen:     vals.length,
-        mastered: vals.filter(c => c.interval >= 30).length
-      };
+    // ── AUDIO ────────────────────────────────────────────────
+    function speakWord() {
+      if (!currentWord || !window.speechSynthesis) return;
+      window.speechSynthesis.cancel();
+      const u = new SpeechSynthesisUtterance(currentWord.italian);
+      u.lang  = 'it-IT';
+      u.rate  = 0.85;
+      window.speechSynthesis.speak(u);
     }
 
-    // ── SCREENS ────────────────────────────────────────────────
+    // ── MODE ─────────────────────────────────────────────────
+    function setMode(m) {
+      appMode = m;
+      document.getElementById('btn-flash').classList.toggle('mode-active', m === 'flashcard');
+      document.getElementById('btn-quiz').classList.toggle('mode-active',  m === 'quiz');
+    }
+
+    // ── QUIZ CHOICES ─────────────────────────────────────────
+    function buildQuizChoices(correctWord) {
+      const pool  = VOCABULARY.filter(w => w.id !== correctWord.id);
+      const decoys = shuffle([...pool]).slice(0, 3);
+      const all    = shuffle([correctWord, ...decoys]);
+
+      const container = document.getElementById('quiz-choices');
+      container.innerHTML = '';
+      all.forEach(w => {
+        const btn = document.createElement('button');
+        btn.className       = 'choice-btn';
+        btn.textContent     = w.english;
+        btn.dataset.wordId  = w.id;
+        btn.onclick = () => quizAnswer(w.id, correctWord.id);
+        container.appendChild(btn);
+      });
+    }
+
+    function quizAnswer(selectedId, correctId) {
+      if (quizLocked) return;
+      quizLocked = true;
+      const knew = (selectedId === correctId);
+
+      document.querySelectorAll('.choice-btn').forEach(btn => {
+        btn.disabled = true;
+        const bId = parseInt(btn.dataset.wordId);
+        if      (bId === correctId)                   btn.classList.add('correct');
+        else if (bId === selectedId && !knew)         btn.classList.add('wrong');
+        else                                          btn.style.opacity = '0.3';
+      });
+
+      recordAnswer(correctId, knew);
+      knew ? sStats.knew++ : sStats.didnt++;
+
+      setTimeout(() => { quizLocked = false; qIdx++; renderCard(); }, 1400);
+    }
+
+    // ── SCREENS ──────────────────────────────────────────────
     function showScreen(id) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
@@ -342,16 +449,16 @@
 
     function showHome() {
       loadProgress();
-      const s = getStats();
-      document.getElementById('stat-seen').textContent     = s.seen;
-      document.getElementById('stat-mastered').textContent = s.mastered;
+      const vals = Object.values(progress);
+      document.getElementById('stat-seen').textContent   = vals.length;
+      document.getElementById('stat-master').textContent = vals.filter(c => c.interval >= 30).length;
 
       const { nNew, nRev } = buildQueue();
       const box = document.getElementById('session-info');
       const btn = document.getElementById('btn-start');
 
       if (nNew === 0 && nRev === 0) {
-        box.innerHTML = '<div class="all-caught-up">✓ All caught up!<br>Check back tomorrow for your next reviews.</div>';
+        box.innerHTML = '<div class="all-caught-up">✓ All caught up!<br>Check back tomorrow.</div>';
         btn.disabled = true; btn.textContent = 'Nothing due today';
       } else {
         box.innerHTML = `
@@ -365,10 +472,33 @@
       showScreen('screen-home');
     }
 
-    // ── SESSION ────────────────────────────────────────────────
+    function showStats() {
+      const vals     = Object.values(progress);
+      const total    = VOCABULARY.length;
+      const mastered = vals.filter(c => c.interval >= 30).length;
+      const learning = vals.filter(c => c.interval >  0 && c.interval < 30).length;
+      const notSeen  = total - vals.length;
+
+      document.getElementById('pb-master').style.width = ((mastered / total) * 100).toFixed(2) + '%';
+      document.getElementById('pb-learn').style.width  = ((learning / total) * 100).toFixed(2) + '%';
+      document.getElementById('pb-new').style.width    = ((notSeen  / total) * 100).toFixed(2) + '%';
+
+      document.getElementById('s-master').textContent = mastered;
+      document.getElementById('s-learn').textContent  = learning;
+      document.getElementById('s-new').textContent    = notSeen;
+
+      const totalAns = vals.reduce((s, c) => s + (c.totalAns     || 0), 0);
+      const totalCor = vals.reduce((s, c) => s + (c.totalCorrect || 0), 0);
+      document.getElementById('s-acc').textContent   = totalAns > 0 ? Math.round((totalCor / totalAns) * 100) + '%' : '—';
+      document.getElementById('s-total').textContent = totalAns + ' answers total';
+
+      showScreen('screen-stats');
+    }
+
+    // ── SESSION ──────────────────────────────────────────────
     function startSession() {
       const { queue: q, nNew, nRev } = buildQueue();
-      queue  = q; qIdx = 0;
+      queue = q; qIdx = 0;
       sStats = { knew:0, didnt:0, newW:nNew, rev:nRev };
       showScreen('screen-card');
       renderCard();
@@ -376,31 +506,41 @@
 
     function renderCard() {
       if (qIdx >= queue.length) { endSession(); return; }
-      const w = queue[qIdx];
-      document.getElementById('word-it').textContent   = w.italian;
-      document.getElementById('word-en').textContent   = w.english;
-      document.getElementById('rank-lbl').textContent  = `Frequency rank #${w.id}`;
-      document.getElementById('sess-count').textContent = `${qIdx+1} / ${queue.length}`;
-      document.getElementById('pbar').style.width = ((qIdx / queue.length)*100).toFixed(1)+'%';
+      currentWord = queue[qIdx];
 
-      // Reset flip without animation
-      const card = document.getElementById('card');
-      card.style.transition = 'none';
-      card.classList.remove('flipped');
-      requestAnimationFrame(() => { card.style.transition = ''; });
-      flipped = false;
-      document.getElementById('ans-btns').classList.remove('show');
+      document.getElementById('sess-count').textContent = `${qIdx + 1} / ${queue.length}`;
+      document.getElementById('pbar').style.width = ((qIdx / queue.length) * 100).toFixed(1) + '%';
+
+      if (appMode === 'quiz') {
+        document.getElementById('flashcard-ui').style.display = 'none';
+        document.getElementById('quiz-ui').style.display      = 'flex';
+        document.getElementById('quiz-word').textContent      = currentWord.italian;
+        buildQuizChoices(currentWord);
+      } else {
+        document.getElementById('quiz-ui').style.display      = 'none';
+        document.getElementById('flashcard-ui').style.display = 'flex';
+        document.getElementById('word-it').textContent  = currentWord.italian;
+        document.getElementById('word-en').textContent  = currentWord.english;
+        document.getElementById('rank-lbl').textContent = `Frequency rank #${currentWord.id}`;
+
+        const card = document.getElementById('card');
+        card.style.transition = 'none';
+        card.classList.remove('flipped');
+        requestAnimationFrame(() => { card.style.transition = ''; });
+        flipped = false;
+        document.getElementById('ans-btns').classList.remove('show');
+      }
     }
 
     function flipCard() {
-      if (flipped) return;
+      if (flipped || appMode === 'quiz') return;
       flipped = true;
       document.getElementById('card').classList.add('flipped');
       setTimeout(() => document.getElementById('ans-btns').classList.add('show'), 250);
     }
 
     function answer(knew) {
-      recordAnswer(queue[qIdx].id, knew);
+      recordAnswer(currentWord.id, knew);
       knew ? sStats.knew++ : sStats.didnt++;
       qIdx++;
       renderCard();
@@ -411,26 +551,29 @@
     }
 
     function endSession() {
-      document.getElementById('pbar').style.width = '100%';
+      document.getElementById('pbar').style.width    = '100%';
       document.getElementById('d-knew').textContent  = sStats.knew;
       document.getElementById('d-didnt').textContent = sStats.didnt;
       document.getElementById('d-new').textContent   = sStats.newW;
       document.getElementById('d-rev').textContent   = sStats.rev;
-      const total = sStats.knew + sStats.didnt;
-      const pct   = total ? Math.round((sStats.knew / total)*100) : 0;
-      document.getElementById('done-sub').textContent = `${pct}% correct · Come back tomorrow for your reviews.`;
+      const t   = sStats.knew + sStats.didnt;
+      const pct = t ? Math.round((sStats.knew / t) * 100) : 0;
+      document.getElementById('done-sub').textContent = `${pct}% correct · Come back tomorrow for reviews.`;
       showScreen('screen-done');
     }
 
-    // ── KEYBOARD (desktop testing) ──────────────────────────────
+    // ── KEYBOARD (desktop) ───────────────────────────────────
     document.addEventListener('keydown', e => {
       if (!document.getElementById('screen-card').classList.contains('active')) return;
-      if ((e.key === ' ' || e.key === 'Enter') && !flipped) { e.preventDefault(); flipCard(); }
-      if (e.key === 'ArrowRight' && flipped) answer(true);
-      if (e.key === 'ArrowLeft'  && flipped) answer(false);
+      if (appMode === 'flashcard') {
+        if ((e.key === ' ' || e.key === 'Enter') && !flipped) { e.preventDefault(); flipCard(); }
+        if (e.key === 'ArrowRight' && flipped) answer(true);
+        if (e.key === 'ArrowLeft'  && flipped) answer(false);
+      }
+      if (e.key === 'p') speakWord();
     });
 
-    // ── INIT ───────────────────────────────────────────────────
+    // ── INIT ─────────────────────────────────────────────────
     loadProgress();
     showHome();
   </script>
