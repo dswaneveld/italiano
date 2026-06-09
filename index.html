@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Italiano">
+  <title>Italiano</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="apple-touch-icon" href="icon.png">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #1a1a2e;
+      color: #ffffff;
+      min-height: 100vh;
+      min-height: -webkit-fill-available;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: env(safe-area-inset-top, 20px) 24px env(safe-area-inset-bottom, 20px);
+      user-select: none;
+    }
+
+    .app-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 28px;
+    }
+
+    .progress-bar-wrap {
+      width: 100%;
+      max-width: 360px;
+      height: 3px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      margin-bottom: 12px;
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      background: #7c6af7;
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+
+    .counter {
+      font-size: 13px;
+      color: rgba(255,255,255,0.35);
+      margin-bottom: 32px;
+      letter-spacing: 0.04em;
+    }
+
+    /* ── Card ── */
+    .card-wrap {
+      width: 100%;
+      max-width: 360px;
+      perspective: 1000px;
+      margin-bottom: 40px;
+      cursor: pointer;
+    }
+
+    .card {
+      width: 100%;
+      min-height: 220px;
+      position: relative;
+      transform-style: preserve-3d;
+      transition: transform 0.45s cubic-bezier(0.4, 0.2, 0.2, 1);
+      border-radius: 20px;
+    }
+
+    .card.flipped { transform: rotateY(180deg); }
+
+    .card-face {
+      position: absolute;
+      width: 100%;
+      min-height: 220px;
+      border-radius: 20px;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 28px;
+    }
+
+    .card-front {
+      background: linear-gradient(135deg, #2d2b55 0%, #1e1c42 100%);
+      border: 1px solid rgba(124, 106, 247, 0.3);
+    }
+
+    .card-back {
+      background: linear-gradient(135deg, #1e3a2f 0%, #152b22 100%);
+      border: 1px solid rgba(76, 175, 130, 0.3);
+      transform: rotateY(180deg);
+    }
+
+    .card-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+    .card-front .card-label { color: rgba(124, 106, 247, 0.7); }
+    .card-back  .card-label { color: rgba(76, 175, 130, 0.7); }
+
+    .card-word {
+      font-size: 42px;
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+    }
+    .card-front .card-word { color: #ffffff; }
+    .card-back  .card-word { color: #e0f5ec; font-size: 32px; }
+
+    .card-tap-hint {
+      font-size: 12px;
+      color: rgba(255,255,255,0.25);
+      margin-top: 20px;
+    }
+
+    /* ── Buttons ── */
+    .btn-row {
+      display: flex;
+      gap: 16px;
+      width: 100%;
+      max-width: 360px;
+      margin-bottom: 20px;
+    }
+
+    .btn {
+      flex: 1;
+      padding: 16px;
+      border: none;
+      border-radius: 14px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: opacity 0.15s, transform 0.1s;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .btn:active { transform: scale(0.96); opacity: 0.85; }
+    .btn:disabled { opacity: 0.25; cursor: default; }
+
+    .btn-prev {
+      background: rgba(255,255,255,0.08);
+      color: rgba(255,255,255,0.7);
+    }
+
+    .btn-next {
+      background: #7c6af7;
+      color: #ffffff;
+    }
+
+    .rank-badge {
+      font-size: 11px;
+      color: rgba(255,255,255,0.2);
+      letter-spacing: 0.06em;
+    }
+  </style>
+</head>
+<body>
+
+  <p class="app-title">Italiano</p>
+
+  <div class="progress-bar-wrap">
+    <div class="progress-bar-fill" id="progress"></div>
+  </div>
+  <p class="counter" id="counter">1 / 945</p>
+
+  <div class="card-wrap" id="cardWrap" onclick="flipCard()">
+    <div class="card" id="card">
+      <div class="card-face card-front">
+        <span class="card-label">Italiano</span>
+        <span class="card-word" id="italianWord">—</span>
+        <span class="card-tap-hint">tap to reveal</span>
+      </div>
+      <div class="card-face card-back">
+        <span class="card-label">English</span>
+        <span class="card-word" id="englishWord">—</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-prev" id="btnPrev" onclick="prevCard()">← Back</button>
+    <button class="btn btn-next" id="btnNext" onclick="nextCard()">Next →</button>
+  </div>
+
+  <p class="rank-badge" id="rankBadge">Frequency rank #1</p>
+
+  <script src="vocabulary.js"></script>
+  <script>
+    let currentIndex = 0;
+    let isFlipped = false;
+
+    function showCard(index) {
+      const word = VOCABULARY[index];
+      document.getElementById("italianWord").textContent = word.italian;
+      document.getElementById("englishWord").textContent = word.english;
+      document.getElementById("counter").textContent = `${index + 1} / ${VOCABULARY.length}`;
+      document.getElementById("rankBadge").textContent = `Frequency rank #${word.id}`;
+
+      const pct = ((index + 1) / VOCABULARY.length * 100).toFixed(1);
+      document.getElementById("progress").style.width = pct + "%";
+
+      document.getElementById("btnPrev").disabled = (index === 0);
+      document.getElementById("btnNext").disabled = (index === VOCABULARY.length - 1);
+
+      // Reset flip
+      const card = document.getElementById("card");
+      card.classList.remove("flipped");
+      isFlipped = false;
+    }
+
+    function flipCard() {
+      const card = document.getElementById("card");
+      isFlipped = !isFlipped;
+      card.classList.toggle("flipped", isFlipped);
+    }
+
+    function nextCard() {
+      if (currentIndex < VOCABULARY.length - 1) {
+        currentIndex++;
+        showCard(currentIndex);
+      }
+    }
+
+    function prevCard() {
+      if (currentIndex > 0) {
+        currentIndex--;
+        showCard(currentIndex);
+      }
+    }
+
+    // Keyboard support (desktop testing)
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowRight") nextCard();
+      if (e.key === "ArrowLeft")  prevCard();
+      if (e.key === " " || e.key === "Enter") flipCard();
+    });
+
+    // Init
+    showCard(0);
+  </script>
+</body>
+</html>
