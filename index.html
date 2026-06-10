@@ -15,339 +15,368 @@
       background: #0f0f1a; color: #fff;
       min-height: 100vh; min-height: -webkit-fill-available; overflow-x: hidden;
     }
+
+    /* ── SCREENS ──────────────────────────────────────────── */
     .screen {
-      display: none; min-height: 100vh; min-height: -webkit-fill-available;
-      padding: env(safe-area-inset-top,24px) 24px env(safe-area-inset-bottom,24px);
+      display: none;
+      padding: env(safe-area-inset-top,24px) 24px env(safe-area-inset-bottom,28px);
     }
     .screen.active { display: flex; flex-direction: column; }
 
-    /* ── HOME ───────────────────────────────────────────────── */
-    .home-header { text-align: center; padding: 36px 0 28px; }
-    .app-name { font-size: 32px; font-weight: 700; letter-spacing: -.02em; }
-    .app-sub  { font-size: 14px; color: rgba(255,255,255,.35); margin-top: 6px; }
-
-    .stats-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-    .stat-card  {
-      background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08);
-      border-radius: 16px; padding: 16px; text-align: center;
+    /* home scrolls freely; card screen is fixed to viewport */
+    #screen-home { min-height: 100vh; min-height: -webkit-fill-available; }
+    #screen-card, #screen-done, #screen-stats {
+      min-height: 100vh; min-height: -webkit-fill-available;
     }
-    .stat-num { font-size: 28px; font-weight: 700; color: #7c6af7; }
-    .stat-lbl { font-size: 12px; color: rgba(255,255,255,.4); margin-top: 4px; letter-spacing: .04em; }
+    #screen-done, #screen-stats { overflow-y: auto; }
 
-    .mode-toggle {
-      display: flex; background: rgba(255,255,255,.07);
-      border-radius: 12px; padding: 4px; gap: 4px; margin-bottom: 16px;
-    }
-    .mode-btn {
-      flex: 1; padding: 10px; border: none; border-radius: 9px;
-      font-size: 14px; font-weight: 600; cursor: pointer;
-      background: transparent; color: rgba(255,255,255,.4);
-      transition: all .2s; -webkit-tap-highlight-color: transparent;
-    }
-    .mode-btn.mode-active { background: rgba(255,255,255,.12); color: #fff; }
+    /* ── HOME ─────────────────────────────────────────────── */
+    .home-header { text-align: center; padding: 32px 0 24px; }
+    .app-name { font-size: 30px; font-weight: 700; letter-spacing: -.02em; }
+    .app-sub  { font-size: 13px; color: rgba(255,255,255,.35); margin-top: 5px; }
 
+    .stats-row {
+      display: flex; gap: 10px; margin-bottom: 20px;
+    }
+    .stat-chip {
+      flex: 1; background: rgba(255,255,255,.05);
+      border: 1px solid rgba(255,255,255,.08);
+      border-radius: 12px; padding: 12px; text-align: center;
+    }
+    .stat-num { font-size: 22px; font-weight: 700; color: #7c6af7; }
+    .stat-lbl { font-size: 11px; color: rgba(255,255,255,.35); margin-top: 2px; }
+
+    /* Category section */
+    .section-hdr {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .section-label { font-size: 12px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: rgba(255,255,255,.35); }
+    .btn-toggle-all {
+      background: none; border: none;
+      color: rgba(255,255,255,.35); font-size: 12px; cursor: pointer; padding: 2px 0;
+    }
+    .btn-toggle-all:active { color: rgba(255,255,255,.7); }
+
+    .cat-grid {
+      display: grid; grid-template-columns: repeat(3, 1fr);
+      gap: 8px; margin-bottom: 16px;
+    }
+    .cat-tile {
+      padding: 10px 4px 8px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,255,255,.09);
+      background: rgba(255,255,255,.04);
+      color: rgba(255,255,255,.38);
+      text-align: center; cursor: pointer;
+      transition: background .18s, border-color .18s, color .18s;
+      -webkit-tap-highlight-color: transparent; user-select: none;
+    }
+    .cat-tile.on {
+      background: rgba(124,106,247,.18);
+      border-color: rgba(124,106,247,.45);
+      color: #ffffff;
+    }
+    .cat-emoji { font-size: 20px; display: block; line-height: 1; margin-bottom: 5px; }
+    .cat-name  { font-size: 9.5px; font-weight: 600; line-height: 1.25; letter-spacing: .01em; }
+    .cat-count { font-size: 9px; color: rgba(255,255,255,.3); margin-top: 3px; }
+    .cat-tile.on .cat-count { color: rgba(255,255,255,.5); }
+
+    /* Session info */
     .session-box {
-      background: rgba(124,106,247,.1); border: 1px solid rgba(124,106,247,.25);
-      border-radius: 16px; padding: 18px; margin-bottom: 20px;
+      background: rgba(124,106,247,.1);
+      border: 1px solid rgba(124,106,247,.22);
+      border-radius: 14px; padding: 16px; margin-bottom: 16px;
     }
-    .session-title { font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: rgba(124,106,247,.9); margin-bottom: 10px; }
-    .session-breakdown { display: flex; gap: 10px; flex-wrap: wrap; }
-    .session-pill { font-size: 13px; padding: 4px 14px; border-radius: 20px; font-weight: 600; }
+    .session-title { font-size: 11px; font-weight: 600; letter-spacing: .07em; text-transform: uppercase; color: rgba(124,106,247,.85); margin-bottom: 9px; }
+    .session-pills { display: flex; gap: 8px; flex-wrap: wrap; }
+    .pill { font-size: 12px; padding: 3px 12px; border-radius: 20px; font-weight: 600; }
     .pill-new    { background: rgba(76,175,130,.15); color: #4caf82; }
     .pill-review { background: rgba(255,180,50,.15);  color: #ffb432; }
-    .all-caught-up { font-size: 14px; color: rgba(255,255,255,.45); line-height: 1.6; }
+    .soft-msg    { font-size: 13px; color: rgba(255,255,255,.4); line-height: 1.5; }
 
-    .spacer { flex: 1; }
+    /* Mode toggle */
+    .mode-toggle { display: flex; background: rgba(255,255,255,.07); border-radius: 11px; padding: 3px; gap: 3px; margin-bottom: 18px; }
+    .mode-btn {
+      flex: 1; padding: 9px; border: none; border-radius: 8px;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      background: transparent; color: rgba(255,255,255,.38);
+      transition: all .2s; -webkit-tap-highlight-color: transparent;
+    }
+    .mode-btn.on { background: rgba(255,255,255,.12); color: #fff; }
+
+    .spacer { flex: 1; min-height: 16px; }
+
     .btn-primary {
-      width: 100%; padding: 18px; background: #7c6af7; color: #fff;
-      border: none; border-radius: 16px; font-size: 17px; font-weight: 600;
-      cursor: pointer; margin-bottom: 12px;
+      width: 100%; padding: 17px; background: #7c6af7; color: #fff;
+      border: none; border-radius: 15px; font-size: 16px; font-weight: 600;
+      cursor: pointer; margin-bottom: 10px;
       transition: opacity .15s, transform .1s; -webkit-tap-highlight-color: transparent;
     }
     .btn-primary:active { transform: scale(.97); opacity: .9; }
     .btn-primary:disabled { opacity: .3; cursor: default; }
     .btn-link {
-      background: none; border: none; color: rgba(255,255,255,.3);
-      font-size: 14px; cursor: pointer; padding: 8px; width: 100%; text-align: center;
+      background: none; border: none;
+      color: rgba(255,255,255,.28); font-size: 13px;
+      cursor: pointer; padding: 6px; width: 100%; text-align: center;
     }
-    .btn-link:active { color: rgba(255,255,255,.6); }
 
-    /* ── CARD SCREEN ────────────────────────────────────────── */
-    .card-header {
+    /* ── CARD SCREEN ──────────────────────────────────────── */
+    .card-hdr {
       display: flex; align-items: center; justify-content: space-between;
-      padding: 16px 0 18px;
+      padding: 14px 0 16px;
     }
-    .sess-count { font-size: 13px; color: rgba(255,255,255,.35); }
-    .btn-exit   { background: none; border: none; color: rgba(255,255,255,.3); font-size: 13px; cursor: pointer; padding: 4px; }
+    .sess-count { font-size: 13px; color: rgba(255,255,255,.32); }
+    .cat-badge  { font-size: 11px; color: rgba(255,255,255,.25); }
+    .btn-exit   { background: none; border: none; color: rgba(255,255,255,.28); font-size: 13px; cursor: pointer; padding: 4px; }
 
-    .pbar-wrap { width: 100%; height: 3px; background: rgba(255,255,255,.1); border-radius: 2px; margin-bottom: 24px; }
+    .pbar-wrap { width: 100%; height: 3px; background: rgba(255,255,255,.1); border-radius: 2px; margin-bottom: 22px; }
     .pbar-fill { height: 100%; background: #7c6af7; border-radius: 2px; transition: width .3s ease; }
 
     /* Flashcard */
     #flashcard-ui { display: flex; flex-direction: column; flex: 1; }
     .card-wrap { width: 100%; perspective: 1000px; margin-bottom: 8px; cursor: pointer; }
     .card {
-      width: 100%; min-height: 200px; position: relative;
+      width: 100%; min-height: 195px; position: relative;
       transform-style: preserve-3d;
-      transition: transform .4s cubic-bezier(.4,.2,.2,1); border-radius: 22px;
+      transition: transform .4s cubic-bezier(.4,.2,.2,1); border-radius: 20px;
     }
     .card.flipped { transform: rotateY(180deg); }
     .card-face {
-      position: absolute; inset: 0; min-height: 200px; border-radius: 22px;
+      position: absolute; inset: 0; min-height: 195px; border-radius: 20px;
       backface-visibility: hidden; -webkit-backface-visibility: hidden;
-      display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 28px;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 26px;
     }
     .card-front { background: #1e1c3a; border: 1px solid rgba(124,106,247,.3); }
     .card-back  { background: #162b22; border: 1px solid rgba(76,175,130,.3); transform: rotateY(180deg); }
-    .card-lang  { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 12px; }
-    .card-front .card-lang { color: rgba(124,106,247,.7); }
-    .card-back  .card-lang { color: rgba(76,175,130,.7); }
-    .word-it { font-size: 42px; font-weight: 700; color: #fff; text-align: center; letter-spacing: -.02em; line-height: 1.1; }
-    .word-en { font-size: 24px; font-weight: 600; color: #d0ede3; text-align: center; line-height: 1.3; }
-    .tap-hint { font-size: 12px; color: rgba(255,255,255,.2); margin-top: 16px; }
+    .c-lang     { font-size: 10px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; margin-bottom: 11px; }
+    .card-front .c-lang { color: rgba(124,106,247,.65); }
+    .card-back  .c-lang { color: rgba(76,175,130,.65); }
+    .word-it { font-size: 38px; font-weight: 700; color: #fff; text-align: center; letter-spacing: -.02em; line-height: 1.15; }
+    .word-en { font-size: 21px; font-weight: 600; color: #d0ede3; text-align: center; line-height: 1.35; }
+    .tap-hint { font-size: 11px; color: rgba(255,255,255,.18); margin-top: 14px; }
 
-    .audio-row {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 10px 2px; margin-bottom: 6px;
-    }
-    .rank-lbl  { font-size: 12px; color: rgba(255,255,255,.18); }
+    .audio-row { display: flex; align-items: center; justify-content: space-between; padding: 8px 0 4px; }
+    .rank-lbl  { font-size: 11px; color: rgba(255,255,255,.16); }
     .speak-btn {
-      background: rgba(255,255,255,.07); color: rgba(255,255,255,.55);
-      border: 1px solid rgba(255,255,255,.1); border-radius: 20px;
-      padding: 6px 16px; font-size: 13px; cursor: pointer;
+      background: rgba(255,255,255,.07); color: rgba(255,255,255,.5);
+      border: 1px solid rgba(255,255,255,.1); border-radius: 18px;
+      padding: 5px 14px; font-size: 12px; cursor: pointer;
       -webkit-tap-highlight-color: transparent; transition: background .15s;
     }
     .speak-btn:active { background: rgba(255,255,255,.14); }
 
-    .answer-btns { display: flex; gap: 12px; opacity: 0; pointer-events: none; transition: opacity .25s; }
-    .answer-btns.show { opacity: 1; pointer-events: all; }
+    .ans-btns { display: flex; gap: 11px; opacity: 0; pointer-events: none; transition: opacity .22s; margin-top: 4px; }
+    .ans-btns.show { opacity: 1; pointer-events: all; }
     .btn-ans {
-      flex: 1; padding: 17px 10px; border: none; border-radius: 15px;
+      flex: 1; padding: 16px 8px; border: none; border-radius: 14px;
       font-weight: 700; cursor: pointer;
       display: flex; flex-direction: column; align-items: center; gap: 3px;
       transition: transform .1s, opacity .15s; -webkit-tap-highlight-color: transparent;
     }
     .btn-ans:active { transform: scale(.96); opacity: .85; }
-    .btn-knew  { background: rgba(76,175,130,.15); color: #4caf82; border: 1.5px solid rgba(76,175,130,.3); font-size: 15px; }
-    .btn-didnt { background: rgba(239,83,80,.1);  color: #ef5350; border: 1.5px solid rgba(239,83,80,.25); font-size: 15px; }
-    .btn-icon  { font-size: 18px; line-height: 1; }
-    .btn-txt   { font-size: 12px; }
+    .btn-knew  { background: rgba(76,175,130,.15); color: #4caf82; border: 1.5px solid rgba(76,175,130,.3); font-size: 14px; }
+    .btn-didnt { background: rgba(239,83,80,.1);  color: #ef5350; border: 1.5px solid rgba(239,83,80,.25); font-size: 14px; }
+    .b-icon    { font-size: 17px; line-height: 1; }
+    .b-txt     { font-size: 11px; }
 
     /* Quiz */
     #quiz-ui { display: none; flex-direction: column; flex: 1; }
     .quiz-card {
       background: #1e1c3a; border: 1px solid rgba(124,106,247,.3);
-      border-radius: 22px; width: 100%;
+      border-radius: 20px; width: 100%;
       display: flex; flex-direction: column; align-items: center; justify-content: center;
-      padding: 28px; min-height: 130px; margin-bottom: 14px;
+      padding: 26px; min-height: 120px; margin-bottom: 12px;
     }
-    .quiz-word { font-size: 40px; font-weight: 700; color: #fff; text-align: center; }
-    .quiz-audio-row { display: flex; justify-content: center; margin-bottom: 14px; }
-    .quiz-choices { display: flex; flex-direction: column; gap: 10px; width: 100%; }
-    .choice-btn {
-      width: 100%; padding: 15px 18px;
+    .quiz-word { font-size: 36px; font-weight: 700; color: #fff; text-align: center; line-height: 1.2; }
+    .quiz-audio { display: flex; justify-content: center; margin-bottom: 12px; }
+    .choices { display: flex; flex-direction: column; gap: 9px; width: 100%; }
+    .choice {
+      width: 100%; padding: 14px 16px;
       background: rgba(255,255,255,.06); color: #fff;
-      border: 1px solid rgba(255,255,255,.1); border-radius: 14px;
-      font-size: 15px; font-weight: 500; cursor: pointer; text-align: left;
+      border: 1px solid rgba(255,255,255,.1); border-radius: 13px;
+      font-size: 14px; font-weight: 500; cursor: pointer; text-align: left;
       transition: background .12s, transform .1s; -webkit-tap-highlight-color: transparent;
     }
-    .choice-btn:not(:disabled):active { transform: scale(.98); background: rgba(255,255,255,.1); }
-    .choice-btn.correct { background: rgba(76,175,130,.2)!important; border-color: rgba(76,175,130,.5)!important; color: #4caf82!important; font-weight: 700; }
-    .choice-btn.wrong   { background: rgba(239,83,80,.15)!important; border-color: rgba(239,83,80,.4)!important; color: #ef7b79!important; }
+    .choice:not(:disabled):active { transform: scale(.98); background: rgba(255,255,255,.1); }
+    .choice.correct { background: rgba(76,175,130,.2)!important; border-color: rgba(76,175,130,.5)!important; color: #4caf82!important; font-weight: 700; }
+    .choice.wrong   { background: rgba(239,83,80,.15)!important; border-color: rgba(239,83,80,.4)!important; color: #ef7b79!important; }
 
-    /* ── DONE ───────────────────────────────────────────────── */
+    /* ── DONE ─────────────────────────────────────────────── */
     .done-screen { align-items: center; justify-content: center; text-align: center; }
-    .done-emoji  { font-size: 60px; margin-bottom: 18px; }
-    .done-title  { font-size: 26px; font-weight: 700; margin-bottom: 8px; }
-    .done-sub    { font-size: 14px; color: rgba(255,255,255,.4); margin-bottom: 32px; line-height: 1.5; }
-    .done-grid   { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; width: 100%; max-width: 300px; margin-bottom: 36px; }
-    .done-stat   { background: rgba(255,255,255,.05); border-radius: 14px; padding: 14px; }
-    .done-num    { font-size: 28px; font-weight: 700; }
-    .done-num.g  { color: #4caf82; }
-    .done-num.r  { color: #ef7b79; }
-    .done-num.b  { color: #7c6af7; }
-    .done-lbl    { font-size: 11px; color: rgba(255,255,255,.35); margin-top: 2px; letter-spacing: .04em; }
+    .done-emoji  { font-size: 56px; margin-bottom: 16px; }
+    .done-title  { font-size: 24px; font-weight: 700; margin-bottom: 7px; }
+    .done-sub    { font-size: 13px; color: rgba(255,255,255,.38); margin-bottom: 28px; line-height: 1.5; }
+    .done-grid   { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 280px; margin-bottom: 32px; }
+    .done-stat   { background: rgba(255,255,255,.05); border-radius: 13px; padding: 13px; }
+    .d-num { font-size: 26px; font-weight: 700; }
+    .d-num.g { color: #4caf82; } .d-num.r { color: #ef7b79; } .d-num.b { color: #7c6af7; }
+    .d-lbl { font-size: 10px; color: rgba(255,255,255,.32); margin-top: 2px; letter-spacing: .04em; }
 
-    /* ── STATS ──────────────────────────────────────────────── */
-    .stats-hdr { display: flex; align-items: center; gap: 14px; padding: 20px 0 28px; }
-    .back-btn  { background: none; border: none; color: rgba(255,255,255,.45); font-size: 22px; cursor: pointer; padding: 4px; line-height: 1; }
-    .stats-heading { font-size: 20px; font-weight: 700; }
+    /* ── STATS ────────────────────────────────────────────── */
+    .stats-hdr { display: flex; align-items: center; gap: 12px; padding: 18px 0 24px; }
+    .back-btn  { background: none; border: none; color: rgba(255,255,255,.4); font-size: 22px; cursor: pointer; padding: 4px; line-height: 1; }
+    .stats-heading { font-size: 19px; font-weight: 700; }
 
-    .prog-bar-wrap { height: 14px; border-radius: 7px; overflow: hidden; display: flex; margin-bottom: 18px; background: rgba(255,255,255,.08); }
-    .pb-seg   { height: 100%; min-width: 0; }
-    .pb-green { background: #4caf82; }
-    .pb-purple{ background: #7c6af7; }
-    .pb-gray  { background: rgba(255,255,255,.12); }
+    .cat-progress-list { margin-bottom: 24px; }
+    .cat-row {
+      display: flex; align-items: center; padding: 12px 0;
+      border-bottom: 1px solid rgba(255,255,255,.06);
+    }
+    .cat-row-emoji { font-size: 18px; width: 28px; flex-shrink: 0; }
+    .cat-row-name  { flex: 1; font-size: 13px; color: rgba(255,255,255,.7); }
+    .cat-row-bar-wrap { width: 70px; height: 4px; background: rgba(255,255,255,.1); border-radius: 2px; margin: 0 12px; }
+    .cat-row-bar { height: 100%; background: #7c6af7; border-radius: 2px; transition: width .4s; }
+    .cat-row-count { font-size: 12px; color: rgba(255,255,255,.35); min-width: 32px; text-align: right; }
 
-    .legend { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
-    .leg-row { display: flex; align-items: center; }
-    .leg-dot { width: 10px; height: 10px; border-radius: 50%; margin-right: 12px; flex-shrink: 0; }
-    .leg-label{ font-size: 14px; color: rgba(255,255,255,.65); flex: 1; }
-    .leg-count{ font-size: 15px; font-weight: 700; color: #fff; }
-
-    .acc-box   { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); border-radius: 18px; padding: 24px; text-align: center; margin-bottom: 28px; }
-    .acc-pct   { font-size: 52px; font-weight: 700; color: #7c6af7; line-height: 1; }
-    .acc-label { font-size: 13px; color: rgba(255,255,255,.4); margin-top: 8px; }
-    .acc-sub   { font-size: 12px; color: rgba(255,255,255,.25); margin-top: 4px; }
+    .acc-box { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); border-radius: 16px; padding: 20px; text-align: center; margin-bottom: 24px; }
+    .acc-pct   { font-size: 48px; font-weight: 700; color: #7c6af7; line-height: 1; }
+    .acc-label { font-size: 12px; color: rgba(255,255,255,.38); margin-top: 6px; }
+    .acc-sub   { font-size: 11px; color: rgba(255,255,255,.22); margin-top: 3px; }
   </style>
 </head>
 <body>
 
-  <!-- ── HOME ─────────────────────────────────────────────── -->
+  <!-- ── HOME ────────────────────────────────────────────── -->
   <div class="screen active" id="screen-home">
     <div class="home-header">
       <div class="app-name">Italiano</div>
       <div class="app-sub">Vocabulary trainer</div>
     </div>
 
-    <div class="stats-grid">
-      <div class="stat-card"><div class="stat-num" id="stat-seen">0</div><div class="stat-lbl">words seen</div></div>
-      <div class="stat-card"><div class="stat-num" id="stat-master">0</div><div class="stat-lbl">mastered</div></div>
+    <div class="stats-row">
+      <div class="stat-chip"><div class="stat-num" id="stat-seen">0</div><div class="stat-lbl">words seen</div></div>
+      <div class="stat-chip"><div class="stat-num" id="stat-master">0</div><div class="stat-lbl">mastered</div></div>
     </div>
 
-    <div class="mode-toggle">
-      <button class="mode-btn mode-active" id="btn-flash" onclick="setMode('flashcard')">🃏 Flashcard</button>
-      <button class="mode-btn"             id="btn-quiz"  onclick="setMode('quiz')">❓ Quiz</button>
+    <div class="section-hdr">
+      <span class="section-label">Topics</span>
+      <button class="btn-toggle-all" onclick="toggleAll()">All / None</button>
     </div>
+    <div class="cat-grid" id="cat-grid"></div>
 
     <div class="session-box" id="session-info"></div>
 
+    <div class="mode-toggle">
+      <button class="mode-btn on" id="btn-flash" onclick="setMode('flashcard')">🃏 Flashcard</button>
+      <button class="mode-btn"   id="btn-quiz"  onclick="setMode('quiz')">❓ Quiz</button>
+    </div>
+
     <div class="spacer"></div>
     <button class="btn-primary" id="btn-start" onclick="startSession()">Start session</button>
-    <button class="btn-link" onclick="showStats()">View progress →</button>
+    <button class="btn-link"    onclick="showStats()">View progress →</button>
   </div>
 
-  <!-- ── CARD ──────────────────────────────────────────────── -->
+  <!-- ── CARD ────────────────────────────────────────────── -->
   <div class="screen" id="screen-card">
-    <div class="card-header">
+    <div class="card-hdr">
       <span class="sess-count" id="sess-count">1 / 20</span>
-      <button class="btn-exit" onclick="exitSession()">✕ Exit</button>
+      <span class="cat-badge"  id="cat-badge"></span>
+      <button class="btn-exit" onclick="exitSession()">✕</button>
     </div>
     <div class="pbar-wrap"><div class="pbar-fill" id="pbar" style="width:0%"></div></div>
 
-    <!-- Flashcard mode -->
+    <!-- Flashcard -->
     <div id="flashcard-ui">
       <div class="card-wrap" onclick="flipCard()">
         <div class="card" id="card">
           <div class="card-face card-front">
-            <span class="card-lang">Italiano</span>
+            <span class="c-lang">Italiano</span>
             <span class="word-it" id="word-it">—</span>
             <span class="tap-hint">tap to reveal</span>
           </div>
           <div class="card-face card-back">
-            <span class="card-lang">English</span>
+            <span class="c-lang">English</span>
             <span class="word-en" id="word-en">—</span>
           </div>
         </div>
       </div>
       <div class="audio-row">
         <button class="speak-btn" onclick="speakWord()">🔊 Speak</button>
-        <span class="rank-lbl" id="rank-lbl">Frequency rank #1</span>
+        <span class="rank-lbl"   id="rank-lbl"></span>
       </div>
-      <div class="answer-btns" id="ans-btns">
-        <button class="btn-ans btn-didnt" onclick="answer(false)">
-          <span class="btn-icon">✗</span><span class="btn-txt">Didn't know</span>
-        </button>
-        <button class="btn-ans btn-knew" onclick="answer(true)">
-          <span class="btn-icon">✓</span><span class="btn-txt">Knew it</span>
-        </button>
+      <div class="ans-btns" id="ans-btns">
+        <button class="btn-ans btn-didnt" onclick="answer(false)"><span class="b-icon">✗</span><span class="b-txt">Didn't know</span></button>
+        <button class="btn-ans btn-knew"  onclick="answer(true)"><span class="b-icon">✓</span><span class="b-txt">Knew it</span></button>
       </div>
     </div>
 
-    <!-- Quiz mode -->
+    <!-- Quiz -->
     <div id="quiz-ui">
       <div class="quiz-card">
-        <span class="card-lang" style="color:rgba(124,106,247,.7)">Italiano</span>
+        <span class="c-lang" style="color:rgba(124,106,247,.65)">Italiano</span>
         <span class="quiz-word" id="quiz-word">—</span>
       </div>
-      <div class="quiz-audio-row">
+      <div class="quiz-audio">
         <button class="speak-btn" onclick="speakWord()">🔊 Speak</button>
       </div>
-      <div class="quiz-choices" id="quiz-choices"></div>
+      <div class="choices" id="choices"></div>
     </div>
   </div>
 
-  <!-- ── DONE ──────────────────────────────────────────────── -->
+  <!-- ── DONE ────────────────────────────────────────────── -->
   <div class="screen done-screen" id="screen-done">
     <div class="done-emoji">🎉</div>
     <div class="done-title">Sessione completa!</div>
     <div class="done-sub" id="done-sub">Come back tomorrow.</div>
     <div class="done-grid">
-      <div class="done-stat"><div class="done-num g" id="d-knew">0</div><div class="done-lbl">knew it</div></div>
-      <div class="done-stat"><div class="done-num r" id="d-didnt">0</div><div class="done-lbl">didn't know</div></div>
-      <div class="done-stat"><div class="done-num b" id="d-new">0</div><div class="done-lbl">new words</div></div>
-      <div class="done-stat"><div class="done-num b" id="d-rev">0</div><div class="done-lbl">reviews</div></div>
+      <div class="done-stat"><div class="d-num g" id="d-knew">0</div><div class="d-lbl">knew it</div></div>
+      <div class="done-stat"><div class="d-num r" id="d-didnt">0</div><div class="d-lbl">didn't know</div></div>
+      <div class="done-stat"><div class="d-num b" id="d-new">0</div><div class="d-lbl">new words</div></div>
+      <div class="done-stat"><div class="d-num b" id="d-rev">0</div><div class="d-lbl">reviews</div></div>
     </div>
     <button class="btn-primary" onclick="showHome()">Back to home</button>
   </div>
 
-  <!-- ── STATS ─────────────────────────────────────────────── -->
+  <!-- ── STATS ───────────────────────────────────────────── -->
   <div class="screen" id="screen-stats">
     <div class="stats-hdr">
       <button class="back-btn" onclick="showHome()">‹</button>
       <span class="stats-heading">Il tuo progresso</span>
     </div>
-
-    <div class="prog-bar-wrap">
-      <div class="pb-seg pb-green"  id="pb-master" style="width:0%"></div>
-      <div class="pb-seg pb-purple" id="pb-learn"  style="width:0%"></div>
-      <div class="pb-seg pb-gray"   id="pb-new"    style="width:100%"></div>
-    </div>
-
-    <div class="legend">
-      <div class="leg-row">
-        <div class="leg-dot" style="background:#4caf82"></div>
-        <span class="leg-label">Mastered (30+ day interval)</span>
-        <span class="leg-count" id="s-master">0</span>
-      </div>
-      <div class="leg-row">
-        <div class="leg-dot" style="background:#7c6af7"></div>
-        <span class="leg-label">Learning</span>
-        <span class="leg-count" id="s-learn">0</span>
-      </div>
-      <div class="leg-row">
-        <div class="leg-dot" style="background:rgba(255,255,255,.2)"></div>
-        <span class="leg-label">Not yet seen</span>
-        <span class="leg-count" id="s-new">0</span>
-      </div>
-    </div>
-
+    <div class="cat-progress-list" id="cat-progress-list"></div>
     <div class="acc-box">
       <div class="acc-pct"   id="s-acc">—</div>
       <div class="acc-label">Overall accuracy</div>
-      <div class="acc-sub"   id="s-total">0 answers total</div>
+      <div class="acc-sub"   id="s-total">0 answers given</div>
     </div>
-
     <button class="btn-primary" onclick="showHome()">Back to home</button>
   </div>
 
   <script src="vocabulary.js"></script>
   <script>
-    // ── CONSTANTS ────────────────────────────────────────────
-    const STORAGE_KEY = 'italiano_v1';
-    const MAX_NEW     = 20;
-    const INTERVALS   = [1, 6, 14, 30, 90]; // days
+    // ── CONSTANTS ───────────────────────────────────────────
+    const STORE_PROGRESS = 'italiano_v2';
+    const STORE_CATS     = 'italiano_cats';
+    const STORE_MODE     = 'italiano_mode';
+    const MAX_NEW        = 20;
+    const INTERVALS      = [1, 6, 14, 30, 90]; // days
 
-    // ── STATE ────────────────────────────────────────────────
-    let progress    = {};
-    let queue       = [];
-    let qIdx        = 0;
-    let flipped     = false;
-    let appMode     = 'flashcard';
-    let currentWord = null;
-    let quizLocked  = false;
-    let sStats      = { knew:0, didnt:0, newW:0, rev:0 };
+    // ── STATE ───────────────────────────────────────────────
+    let progress     = {};
+    let selectedCats = new Set();
+    let appMode      = 'flashcard';
+    let queue        = [];
+    let qIdx         = 0;
+    let flipped      = false;
+    let currentWord  = null;
+    let quizLocked   = false;
+    let sStats       = { knew:0, didnt:0, newW:0, rev:0 };
 
-    // ── STORAGE ──────────────────────────────────────────────
-    function loadProgress() {
-      try { progress = JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); }
-      catch(e) { progress = {}; }
+    // ── PERSISTENCE ─────────────────────────────────────────
+    function loadAll() {
+      try { progress = JSON.parse(localStorage.getItem(STORE_PROGRESS) || '{}'); } catch(e) { progress = {}; }
+      try {
+        const c = localStorage.getItem(STORE_CATS);
+        selectedCats = c ? new Set(JSON.parse(c)) : new Set(CATEGORIES.map(x => x.id));
+      } catch(e) { selectedCats = new Set(CATEGORIES.map(x => x.id)); }
+      try { appMode = localStorage.getItem(STORE_MODE) || 'flashcard'; } catch(e) {}
     }
-    function saveProgress() {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(progress));
-    }
+    function saveProgress() { localStorage.setItem(STORE_PROGRESS, JSON.stringify(progress)); }
+    function saveCats()     { localStorage.setItem(STORE_CATS, JSON.stringify([...selectedCats])); }
+    function saveMode()     { localStorage.setItem(STORE_MODE, appMode); }
 
-    // ── SRS ──────────────────────────────────────────────────
+    // ── SRS ─────────────────────────────────────────────────
     function recordAnswer(wordId, knew) {
       const c = progress[wordId] || { rep:0, interval:0, totalAns:0, totalCorrect:0 };
       c.totalAns     = (c.totalAns     || 0) + 1;
@@ -358,9 +387,7 @@
       } else {
         c.rep = 0; c.interval = 1;
       }
-      const next = new Date();
-      next.setDate(next.getDate() + c.interval);
-      next.setHours(0, 0, 0, 0);
+      const next = new Date(); next.setDate(next.getDate() + c.interval); next.setHours(0,0,0,0);
       c.nextReview    = next.getTime();
       progress[wordId] = c;
       saveProgress();
@@ -369,8 +396,9 @@
     // ── QUEUE ────────────────────────────────────────────────
     function buildQueue() {
       const todayTs = (() => { const d = new Date(); d.setHours(0,0,0,0); return d.getTime(); })();
+      const pool    = VOCABULARY.filter(w => selectedCats.has(w.category));
       const reviews = [], newWords = [];
-      for (const w of VOCABULARY) {
+      for (const w of pool) {
         const c = progress[w.id];
         if (!c) newWords.push(w);
         else if (c.nextReview <= todayTs) reviews.push(w);
@@ -380,10 +408,7 @@
     }
 
     function shuffle(a) {
-      for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        [a[i], a[j]] = [a[j], a[i]];
-      }
+      for (let i = a.length-1; i>0; i--) { const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
       return a;
     }
 
@@ -392,112 +417,121 @@
       if (!currentWord || !window.speechSynthesis) return;
       window.speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(currentWord.italian);
-      u.lang  = 'it-IT';
-      u.rate  = 0.85;
+      u.lang = 'it-IT'; u.rate = 0.85;
       window.speechSynthesis.speak(u);
+    }
+
+    // ── CATEGORY UI ─────────────────────────────────────────
+    function buildCatGrid() {
+      const grid = document.getElementById('cat-grid');
+      grid.innerHTML = '';
+      CATEGORIES.forEach(cat => {
+        const count = VOCABULARY.filter(w => w.category === cat.id).length;
+        const tile = document.createElement('div');
+        tile.className = 'cat-tile' + (selectedCats.has(cat.id) ? ' on' : '');
+        tile.dataset.id = cat.id;
+        tile.innerHTML = `<span class="cat-emoji">${cat.emoji}</span><span class="cat-name">${cat.name}</span><span class="cat-count">${count} words</span>`;
+        tile.onclick = () => toggleCat(cat.id);
+        grid.appendChild(tile);
+      });
+    }
+
+    function toggleCat(id) {
+      selectedCats.has(id) ? selectedCats.delete(id) : selectedCats.add(id);
+      saveCats();
+      document.querySelectorAll('.cat-tile').forEach(t => t.classList.toggle('on', selectedCats.has(t.dataset.id)));
+      updateSessionInfo();
+    }
+
+    function toggleAll() {
+      if (selectedCats.size === CATEGORIES.length) selectedCats.clear();
+      else CATEGORIES.forEach(c => selectedCats.add(c.id));
+      saveCats();
+      document.querySelectorAll('.cat-tile').forEach(t => t.classList.toggle('on', selectedCats.has(t.dataset.id)));
+      updateSessionInfo();
+    }
+
+    // ── SESSION INFO (home screen) ───────────────────────────
+    function updateSessionInfo() {
+      const box = document.getElementById('session-info');
+      const btn = document.getElementById('btn-start');
+
+      if (selectedCats.size === 0) {
+        box.innerHTML = '<div class="soft-msg">← Select at least one topic to begin.</div>';
+        btn.disabled = true; btn.textContent = 'Select a topic first';
+        return;
+      }
+
+      const { nNew, nRev } = buildQueue();
+      if (nNew === 0 && nRev === 0) {
+        box.innerHTML = '<div class="soft-msg">✓ All caught up with selected topics.<br>Check back tomorrow or choose new topics.</div>';
+        btn.disabled = true; btn.textContent = 'Nothing due today';
+      } else {
+        box.innerHTML = `
+          <div class="session-title">Today's session</div>
+          <div class="session-pills">
+            ${nNew ? `<span class="pill pill-new">${nNew} new</span>` : ''}
+            ${nRev ? `<span class="pill pill-review">${nRev} review</span>` : ''}
+          </div>`;
+        btn.disabled = false; btn.textContent = 'Start session';
+      }
     }
 
     // ── MODE ─────────────────────────────────────────────────
     function setMode(m) {
-      appMode = m;
-      document.getElementById('btn-flash').classList.toggle('mode-active', m === 'flashcard');
-      document.getElementById('btn-quiz').classList.toggle('mode-active',  m === 'quiz');
-    }
-
-    // ── QUIZ CHOICES ─────────────────────────────────────────
-    function buildQuizChoices(correctWord) {
-      const pool  = VOCABULARY.filter(w => w.id !== correctWord.id);
-      const decoys = shuffle([...pool]).slice(0, 3);
-      const all    = shuffle([correctWord, ...decoys]);
-
-      const container = document.getElementById('quiz-choices');
-      container.innerHTML = '';
-      all.forEach(w => {
-        const btn = document.createElement('button');
-        btn.className       = 'choice-btn';
-        btn.textContent     = w.english;
-        btn.dataset.wordId  = w.id;
-        btn.onclick = () => quizAnswer(w.id, correctWord.id);
-        container.appendChild(btn);
-      });
-    }
-
-    function quizAnswer(selectedId, correctId) {
-      if (quizLocked) return;
-      quizLocked = true;
-      const knew = (selectedId === correctId);
-
-      document.querySelectorAll('.choice-btn').forEach(btn => {
-        btn.disabled = true;
-        const bId = parseInt(btn.dataset.wordId);
-        if      (bId === correctId)                   btn.classList.add('correct');
-        else if (bId === selectedId && !knew)         btn.classList.add('wrong');
-        else                                          btn.style.opacity = '0.3';
-      });
-
-      recordAnswer(correctId, knew);
-      knew ? sStats.knew++ : sStats.didnt++;
-
-      setTimeout(() => { quizLocked = false; qIdx++; renderCard(); }, 1400);
+      appMode = m; saveMode();
+      document.getElementById('btn-flash').classList.toggle('on', m === 'flashcard');
+      document.getElementById('btn-quiz').classList.toggle('on',  m === 'quiz');
     }
 
     // ── SCREENS ──────────────────────────────────────────────
     function showScreen(id) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
       document.getElementById(id).classList.add('active');
+      window.scrollTo(0, 0);
     }
 
     function showHome() {
-      loadProgress();
+      loadAll();
       const vals = Object.values(progress);
       document.getElementById('stat-seen').textContent   = vals.length;
       document.getElementById('stat-master').textContent = vals.filter(c => c.interval >= 30).length;
-
-      const { nNew, nRev } = buildQueue();
-      const box = document.getElementById('session-info');
-      const btn = document.getElementById('btn-start');
-
-      if (nNew === 0 && nRev === 0) {
-        box.innerHTML = '<div class="all-caught-up">✓ All caught up!<br>Check back tomorrow.</div>';
-        btn.disabled = true; btn.textContent = 'Nothing due today';
-      } else {
-        box.innerHTML = `
-          <div class="session-title">Today's session</div>
-          <div class="session-breakdown">
-            ${nNew ? `<span class="session-pill pill-new">${nNew} new</span>` : ''}
-            ${nRev ? `<span class="session-pill pill-review">${nRev} review</span>` : ''}
-          </div>`;
-        btn.disabled = false; btn.textContent = 'Start session';
-      }
+      document.getElementById('btn-flash').classList.toggle('on', appMode === 'flashcard');
+      document.getElementById('btn-quiz').classList.toggle('on',  appMode === 'quiz');
+      buildCatGrid();
+      updateSessionInfo();
       showScreen('screen-home');
     }
 
     function showStats() {
-      const vals     = Object.values(progress);
-      const total    = VOCABULARY.length;
-      const mastered = vals.filter(c => c.interval >= 30).length;
-      const learning = vals.filter(c => c.interval >  0 && c.interval < 30).length;
-      const notSeen  = total - vals.length;
+      const vals  = Object.values(progress);
+      const list  = document.getElementById('cat-progress-list');
+      list.innerHTML = '';
 
-      document.getElementById('pb-master').style.width = ((mastered / total) * 100).toFixed(2) + '%';
-      document.getElementById('pb-learn').style.width  = ((learning / total) * 100).toFixed(2) + '%';
-      document.getElementById('pb-new').style.width    = ((notSeen  / total) * 100).toFixed(2) + '%';
+      CATEGORIES.forEach(cat => {
+        const words   = VOCABULARY.filter(w => w.category === cat.id);
+        const seen    = words.filter(w => progress[w.id]).length;
+        const pct     = Math.round((seen / words.length) * 100);
+        const row     = document.createElement('div');
+        row.className = 'cat-row';
+        row.innerHTML = `
+          <span class="cat-row-emoji">${cat.emoji}</span>
+          <span class="cat-row-name">${cat.name}</span>
+          <div class="cat-row-bar-wrap"><div class="cat-row-bar" style="width:${pct}%"></div></div>
+          <span class="cat-row-count">${seen}/${words.length}</span>`;
+        list.appendChild(row);
+      });
 
-      document.getElementById('s-master').textContent = mastered;
-      document.getElementById('s-learn').textContent  = learning;
-      document.getElementById('s-new').textContent    = notSeen;
-
-      const totalAns = vals.reduce((s, c) => s + (c.totalAns     || 0), 0);
-      const totalCor = vals.reduce((s, c) => s + (c.totalCorrect || 0), 0);
-      document.getElementById('s-acc').textContent   = totalAns > 0 ? Math.round((totalCor / totalAns) * 100) + '%' : '—';
-      document.getElementById('s-total').textContent = totalAns + ' answers total';
-
+      const totalAns = vals.reduce((s,c) => s + (c.totalAns||0), 0);
+      const totalCor = vals.reduce((s,c) => s + (c.totalCorrect||0), 0);
+      document.getElementById('s-acc').textContent   = totalAns ? Math.round((totalCor/totalAns)*100)+'%' : '—';
+      document.getElementById('s-total').textContent = totalAns + ' answers given';
       showScreen('screen-stats');
     }
 
     // ── SESSION ──────────────────────────────────────────────
     function startSession() {
-      const { queue: q, nNew, nRev } = buildQueue();
+      const { queue:q, nNew, nRev } = buildQueue();
       queue = q; qIdx = 0;
       sStats = { knew:0, didnt:0, newW:nNew, rev:nRev };
       showScreen('screen-card');
@@ -508,28 +542,69 @@
       if (qIdx >= queue.length) { endSession(); return; }
       currentWord = queue[qIdx];
 
-      document.getElementById('sess-count').textContent = `${qIdx + 1} / ${queue.length}`;
-      document.getElementById('pbar').style.width = ((qIdx / queue.length) * 100).toFixed(1) + '%';
+      document.getElementById('sess-count').textContent = `${qIdx+1} / ${queue.length}`;
+      document.getElementById('pbar').style.width       = ((qIdx/queue.length)*100).toFixed(1)+'%';
+
+      // Show category name as subtle badge
+      const cat = CATEGORIES.find(c => c.id === currentWord.category);
+      document.getElementById('cat-badge').textContent = cat ? cat.emoji + ' ' + cat.name : '';
 
       if (appMode === 'quiz') {
         document.getElementById('flashcard-ui').style.display = 'none';
         document.getElementById('quiz-ui').style.display      = 'flex';
         document.getElementById('quiz-word').textContent      = currentWord.italian;
-        buildQuizChoices(currentWord);
+        buildChoices(currentWord);
       } else {
         document.getElementById('quiz-ui').style.display      = 'none';
         document.getElementById('flashcard-ui').style.display = 'flex';
         document.getElementById('word-it').textContent  = currentWord.italian;
         document.getElementById('word-en').textContent  = currentWord.english;
-        document.getElementById('rank-lbl').textContent = `Frequency rank #${currentWord.id}`;
+        document.getElementById('rank-lbl').textContent = `#${currentWord.id} of 267`;
 
         const card = document.getElementById('card');
-        card.style.transition = 'none';
-        card.classList.remove('flipped');
+        card.style.transition = 'none'; card.classList.remove('flipped');
         requestAnimationFrame(() => { card.style.transition = ''; });
         flipped = false;
         document.getElementById('ans-btns').classList.remove('show');
       }
+    }
+
+    // ── QUIZ CHOICES ─────────────────────────────────────────
+    function buildChoices(correctWord) {
+      // Prefer distractors from the same category for a harder, more meaningful quiz
+      const sameCat  = shuffle(VOCABULARY.filter(w => w.id !== correctWord.id && w.category === correctWord.category));
+      const otherCat = shuffle(VOCABULARY.filter(w => w.id !== correctWord.id && w.category !== correctWord.category));
+      const decoys   = [...sameCat.slice(0,2), ...otherCat].slice(0, 3);
+      const all      = shuffle([correctWord, ...decoys]);
+
+      const container = document.getElementById('choices');
+      container.innerHTML = '';
+      all.forEach(w => {
+        const btn = document.createElement('button');
+        btn.className      = 'choice';
+        btn.textContent    = w.english;
+        btn.dataset.wordId = w.id;
+        btn.onclick        = () => quizAnswer(w.id, correctWord.id);
+        container.appendChild(btn);
+      });
+    }
+
+    function quizAnswer(selectedId, correctId) {
+      if (quizLocked) return;
+      quizLocked = true;
+      const knew = (selectedId === correctId);
+
+      document.querySelectorAll('.choice').forEach(btn => {
+        btn.disabled = true;
+        const bId = parseInt(btn.dataset.wordId);
+        if      (bId === correctId)          btn.classList.add('correct');
+        else if (bId === selectedId && !knew) btn.classList.add('wrong');
+        else                                  btn.style.opacity = '0.3';
+      });
+
+      recordAnswer(correctId, knew);
+      knew ? sStats.knew++ : sStats.didnt++;
+      setTimeout(() => { quizLocked = false; qIdx++; renderCard(); }, 1400);
     }
 
     function flipCard() {
@@ -542,12 +617,11 @@
     function answer(knew) {
       recordAnswer(currentWord.id, knew);
       knew ? sStats.knew++ : sStats.didnt++;
-      qIdx++;
-      renderCard();
+      qIdx++; renderCard();
     }
 
     function exitSession() {
-      if (confirm('Exit session? Progress so far is saved.')) showHome();
+      if (confirm('Exit session? Your progress so far is saved.')) showHome();
     }
 
     function endSession() {
@@ -556,25 +630,24 @@
       document.getElementById('d-didnt').textContent = sStats.didnt;
       document.getElementById('d-new').textContent   = sStats.newW;
       document.getElementById('d-rev').textContent   = sStats.rev;
-      const t   = sStats.knew + sStats.didnt;
-      const pct = t ? Math.round((sStats.knew / t) * 100) : 0;
-      document.getElementById('done-sub').textContent = `${pct}% correct · Come back tomorrow for reviews.`;
+      const t = sStats.knew + sStats.didnt;
+      document.getElementById('done-sub').textContent = (t ? Math.round((sStats.knew/t)*100) : 0) + '% correct · Come back tomorrow for reviews.';
       showScreen('screen-done');
     }
 
-    // ── KEYBOARD (desktop) ───────────────────────────────────
+    // ── KEYBOARD ─────────────────────────────────────────────
     document.addEventListener('keydown', e => {
       if (!document.getElementById('screen-card').classList.contains('active')) return;
       if (appMode === 'flashcard') {
-        if ((e.key === ' ' || e.key === 'Enter') && !flipped) { e.preventDefault(); flipCard(); }
-        if (e.key === 'ArrowRight' && flipped) answer(true);
-        if (e.key === 'ArrowLeft'  && flipped) answer(false);
+        if ((e.key===' '||e.key==='Enter') && !flipped) { e.preventDefault(); flipCard(); }
+        if (e.key==='ArrowRight' && flipped) answer(true);
+        if (e.key==='ArrowLeft'  && flipped) answer(false);
       }
-      if (e.key === 'p') speakWord();
+      if (e.key==='p') speakWord();
     });
 
     // ── INIT ─────────────────────────────────────────────────
-    loadProgress();
+    loadAll();
     showHome();
   </script>
 </body>
