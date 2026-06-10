@@ -349,7 +349,7 @@
       if (!text || !window.speechSynthesis) return;
       window.speechSynthesis.cancel();
       const u = new SpeechSynthesisUtterance(text);
-      u.lang = 'it-IT'; u.rate = 0.85; window.speechSynthesis.speak(u);
+      u.lang = 'it-IT'; u.rate = 0.75; window.speechSynthesis.speak(u);
     }
     function speakWord() { if (currentWord) speakText(currentWord.it); }
     function speakSentence() { if (currentWord) speakText(currentWord.exIt); }
