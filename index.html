@@ -110,6 +110,10 @@
     .example-box.show { opacity: 1; max-height: 200px; padding: 14px 16px; margin: 8px 0; }
     .example-box.hidden-space { padding: 0; margin: 0; border-width: 0; }
     .ex-label { font-size: 9px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: rgba(255,255,255,.3); margin-bottom: 6px; }
+    .ex-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; }
+    .ex-head .ex-label { margin-bottom: 0; }
+    .ex-speak-btn { background: rgba(124,106,247,.18); color: #b3a6f9; border: 1px solid rgba(124,106,247,.35); border-radius: 16px; padding: 4px 12px; font-size: 11px; font-weight: 600; cursor: pointer; transition: background .15s; }
+    .ex-speak-btn:active { background: rgba(124,106,247,.32); }
     .ex-it { font-size: 15px; color: #e8e6f5; line-height: 1.4; margin-bottom: 5px; }
     .ex-en { font-size: 13px; color: rgba(255,255,255,.45); line-height: 1.4; font-style: italic; }
 
@@ -232,7 +236,7 @@
         </div>
       </div>
       <div class="example-box" id="fc-example">
-        <div class="ex-label">Example</div>
+        <div class="ex-head"><span class="ex-label">Example</span><button class="ex-speak-btn" onclick="speakSentence()">🔊 Hear sentence</button></div>
         <div class="ex-it" id="fc-ex-it"></div>
         <div class="ex-en" id="fc-ex-en"></div>
       </div>
@@ -249,7 +253,7 @@
       <div class="quiz-audio"><button class="speak-btn" onclick="speakWord()">🔊 Speak</button></div>
       <div class="choices" id="choices"></div>
       <div class="example-box" id="quiz-example">
-        <div class="ex-label">Example</div>
+        <div class="ex-head"><span class="ex-label">Example</span><button class="ex-speak-btn" onclick="speakSentence()">🔊 Hear sentence</button></div>
         <div class="ex-it" id="quiz-ex-it"></div>
         <div class="ex-en" id="quiz-ex-en"></div>
       </div>
@@ -341,12 +345,14 @@
     function shuffle(a) { for (let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
 
     // ── AUDIO ──
-    function speakWord() {
-      if (!currentWord || !window.speechSynthesis) return;
+    function speakText(text) {
+      if (!text || !window.speechSynthesis) return;
       window.speechSynthesis.cancel();
-      const u = new SpeechSynthesisUtterance(currentWord.it);
+      const u = new SpeechSynthesisUtterance(text);
       u.lang = 'it-IT'; u.rate = 0.85; window.speechSynthesis.speak(u);
     }
+    function speakWord() { if (currentWord) speakText(currentWord.it); }
+    function speakSentence() { if (currentWord) speakText(currentWord.exIt); }
 
     // ── RANGE SLIDER ──
     function updateRangeUI() {
